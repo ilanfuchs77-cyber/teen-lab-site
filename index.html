@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teen Lab — Build Your First Digital Product</title>
+  <meta name="description" content="Teen Lab helps ambitious teenagers discover, simulate, and launch their first real digital product.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:   #040C1C;
+    --navy:    #0A1628;
+    --card:    #0D1E36;
+    --border:  #1A304E;
+    --lime:    #D4F43A;
+    --teal:    #2ECDB8;
+    --white:   #F0F5FF;
+    --muted:   #4A6585;
+    --mid:     #7A95B4;
+    --purple:  #a78bfa;
+    --gold:    #FACC15;
+
+    --type-display: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+    --type-body:    system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --type-mono:    'Courier New', Courier, monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--type-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw; height: 64px;
+    background: rgba(4, 12, 28, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .wordmark {
+    font-family: var(--type-display); font-size: 1.15rem;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--white); text-decoration: none;
+  }
+  .wordmark span { color: var(--lime); }
+
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--mid); text-decoration: none; font-size: 0.875rem;
+    letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  .btn-nav {
+    background: var(--lime); color: var(--black);
+    font-family: var(--type-display); font-size: 0.78rem;
+    letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+    padding: 0.55rem 1.4rem; border-radius: 3px; transition: opacity 0.2s;
+  }
+  .btn-nav:hover { opacity: 0.85; }
+
+  .hero {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center; padding: 100px 5vw 60px;
+  }
+  .hero-left { max-width: 580px; }
+
+  .eyebrow {
+    display: inline-block; font-size: 0.78rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--lime); margin-bottom: 1.5rem;
+    font-family: var(--type-mono);
+  }
+
+  h1 {
+    font-family: var(--type-display);
+    font-size: clamp(3.2rem, 6vw, 5.4rem); line-height: 0.92;
+    letter-spacing: -0.025em; text-transform: uppercase;
+    text-wrap: balance; color: var(--white); margin-bottom: 1.75rem;
+  }
+  h1 .accent { color: var(--lime); }
+
+  .hero-sub { font-size: 1.1rem; color: var(--mid); line-height: 1.65; max-width: 440px; margin-bottom: 2.5rem; }
+  .hero-cta { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: var(--lime); color: var(--black);
+    font-family: var(--type-display); font-size: 0.88rem;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    padding: 0.9rem 2rem; border-radius: 3px;
+    transition: transform 0.18s, box-shadow 0.18s;
+    box-shadow: 0 0 0 0 rgba(212,244,58,0);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,244,58,0.25); }
+  .btn-primary svg { width: 18px; height: 18px; }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--white); font-family: var(--type-display); font-size: 0.84rem;
+    letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    padding: 0.85rem 1.8rem; border-radius: 3px; border: 1px solid var(--border);
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .btn-outline:hover { border-color: var(--mid); background: rgba(255,255,255,0.03); }
+  .btn-outline svg { width: 16px; height: 16px; }
+
+  .hero-note { margin-top: 2rem; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.03em; }
+  .hero-note strong { color: var(--teal); font-weight: 600; }
+
+  .mockup-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+
+  .app-window {
+    width: 100%; max-width: 520px; background: #060F1E;
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(46,205,184,0.08);
+  }
+  .app-chrome {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.75rem 1rem; background: #08121F; border-bottom: 1px solid var(--border);
+  }
+  .chrome-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .chrome-dot:nth-child(1) { background: #FF5F56; }
+  .chrome-dot:nth-child(2) { background: #FFBD2E; }
+  .chrome-dot:nth-child(3) { background: #27C93F; }
+  .chrome-title {
+    flex: 1; text-align: center; font-size: 0.72rem; color: var(--muted);
+    letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--type-mono);
+  }
+  .app-tabs { display: flex; border-bottom: 1px solid var(--border); background: #07101D; }
+  .app-tab {
+    flex: 1; padding: 0.6rem 0.5rem; font-size: 0.65rem; text-align: center;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+    border-bottom: 2px solid transparent;
+  }
+  .app-tab.active { color: var(--teal); border-bottom-color: var(--teal); background: rgba(46,205,184,0.04); }
+  .app-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .mock-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .mock-card-header { display: flex; align-items: center; justify-content: space-between; }
+  .mock-card-title { font-size: 0.78rem; font-weight: 700; color: var(--white); }
+  .mock-card-earn { font-size: 0.68rem; font-family: var(--type-mono); color: var(--lime); font-weight: 700; }
+  .mock-card-desc { font-size: 0.65rem; color: var(--muted); line-height: 1.45; }
+  .mock-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .mock-tag {
+    font-size: 0.58rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.18rem 0.45rem; border-radius: 3px;
+    background: rgba(46,205,184,0.1); color: var(--teal); font-family: var(--type-mono);
+  }
+  .mock-tag.purple { background: rgba(139,92,246,0.12); color: var(--purple); }
+
+  section { padding: 6rem 5vw; }
+  .section-eyebrow {
+    font-family: var(--type-mono); font-size: 0.72rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem;
+  }
+  h2 {
+    font-family: var(--type-display); font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1; letter-spacing: -0.02em; text-transform: uppercase;
+    text-wrap: balance; margin-bottom: 1rem;
+  }
+  .section-sub { font-size: 1rem; color: var(--mid); max-width: 520px; line-height: 1.7; }
+
+  .compare-section { background: var(--navy); }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 3.5rem; max-width: 960px; }
+  .plan-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 2rem 1.6rem; display: flex; flex-direction: column; gap: 1.25rem;
+    position: relative; transition: border-color 0.2s;
+  }
+  .plan-card:hover { border-color: var(--muted); }
+  .plan-card.featured { border-color: var(--lime); box-shadow: 0 0 40px rgba(212,244,58,0.08); }
+  .plan-badge {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    background: var(--lime); color: var(--black);
+    font-family: var(--type-display); font-size: 0.62rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.25rem 0.85rem; border-radius: 20px; white-space: nowrap;
+  }
+  .plan-name { font-family: var(--type-display); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .plan-price { font-family: var(--type-display); font-size: 2.4rem; letter-spacing: -0.03em; line-height: 1; }
+  .plan-price .period { font-size: 0.85rem; color: var(--muted); font-family: var(--type-body); font-weight: 400; }
+  .plan-desc { font-size: 0.85rem; color: var(--mid); line-height: 1.55; }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; flex: 1; }
+  .plan-features li { font-size: 0.82rem; color: var(--mid); display: flex; align-items: flex-start; gap: 0.55rem; line-height: 1.45; }
+  .plan-features li::before {
+    content: ''; flex-shrink: 0; width: 16px; height: 16px; margin-top: 1px;
+    border-radius: 50%; background: rgba(46,205,184,0.15);
+  }
+  .plan-features .check::before { background: var(--teal); }
+  .plan-features .lock { color: var(--muted); }
+  .plan-features .lock::before { background: rgba(74,101,133,0.2); }
+  .plan-btn {
+    display: block; text-align: center; text-decoration: none;
+    padding: 0.85rem; border-radius: 4px;
+    font-family: var(--type-display); font-size: 0.8rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    transition: transform 0.15s; margin-top: auto;
+  }
+  .plan-btn:hover { transform: translateY(-1px); }
+  .plan-btn.lime { background: var(--lime); color: var(--black); }
+  .plan-btn.outline { border: 1px solid var(--border); color: var(--white); background: transparent; }
+  .plan-btn.gold { background: var(--gold); color: var(--black); }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    margin-top: 3.5rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .feat-card { padding: 2rem 1.6rem; background: var(--card); transition: background 0.2s; }
+  .feat-card:hover { background: #111E35; }
+  .feat-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.25rem; font-size: 1.2rem;
+  }
+  .feat-icon.lime   { background: rgba(212,244,58,0.12); color: var(--lime); }
+  .feat-icon.teal   { background: rgba(46,205,184,0.12); color: var(--teal); }
+  .feat-icon.purple { background: rgba(139,92,246,0.12); color: var(--purple); }
+  .feat-icon.orange { background: rgba(251,146,60,0.12); color: #fb923c; }
+  h3 { font-family: var(--type-display); font-size: 0.95rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .feat-desc { font-size: 0.875rem; color: var(--mid); line-height: 1.6; }
+  .feat-badge {
+    display: inline-block; margin-top: 0.75rem; font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 3px; font-family: var(--type-mono);
+  }
+  .feat-badge.free { background: rgba(46,205,184,0.12); color: var(--teal); }
+  .feat-badge.full { background: rgba(212,244,58,0.12); color: var(--lime); }
+  .feat-badge.pro  { background: rgba(250,204,21,0.12); color: var(--gold); }
+
+  .how-section { background: var(--navy); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 3.5rem; position: relative; }
+  .steps::before {
+    content: ''; position: absolute; top: 28px;
+    left: calc(16.66% + 1rem); right: calc(16.66% + 1rem);
+    height: 1px; background: var(--border);
+  }
+  .step { padding: 0 2rem; text-align: center; }
+  .step-num {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem; font-family: var(--type-mono); font-size: 0.8rem;
+    color: var(--lime); position: relative; z-index: 1;
+  }
+  .step h3 { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--white); }
+  .step p { font-size: 0.875rem; color: var(--mid); line-height: 1.6; }
+
+  .cta-section {
+    background: var(--lime); color: var(--black); padding: 5rem 5vw;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 3rem; flex-wrap: wrap;
+  }
+  .cta-section h2 {
+    font-family: var(--type-display); font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.025em; text-transform: uppercase;
+    color: var(--black); line-height: 0.95; text-wrap: balance;
+  }
+  .cta-section p { color: rgba(4,12,28,0.65); font-size: 1rem; margin-top: 0.75rem; }
+  .cta-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-dark {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: var(--black); color: var(--lime);
+    font-family: var(--type-display); font-size: 0.88rem;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    padding: 1rem 2.25rem; border-radius: 3px; white-space: nowrap; transition: transform 0.18s;
+  }
+  .btn-dark:hover { transform: translateY(-2px); }
+  .btn-dark svg { width: 18px; height: 18px; }
+  .btn-dark-outline {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: transparent; color: var(--black); border: 1.5px solid var(--black);
+    font-family: var(--type-display); font-size: 0.84rem;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    padding: 0.95rem 2rem; border-radius: 3px; white-space: nowrap; transition: background 0.18s;
+  }
+  .btn-dark-outline:hover { background: rgba(4,12,28,0.08); }
+  .btn-dark-outline svg { width: 16px; height: 16px; }
+
+  footer {
+    background: var(--navy); border-top: 1px solid var(--border); padding: 2.5rem 5vw;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-left { display: flex; flex-direction: column; gap: 0.3rem; }
+  .footer-wordmark {
+    font-family: var(--type-display); font-size: 1rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--white); text-decoration: none;
+  }
+  .footer-wordmark span { color: var(--lime); }
+  .footer-tagline { font-size: 0.75rem; color: var(--muted); }
+  .footer-right { font-size: 0.75rem; color: var(--muted); text-align: right; }
+
+  .hero-left  { animation: fadeup 0.7s cubic-bezier(.22,1,.36,1) both; }
+  .mockup-wrap { animation: fadeup 0.7s 0.15s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 3rem; padding-top: 100px; }
+    .mockup-wrap { order: -1; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .compare-grid { grid-template-columns: 1fr; max-width: 380px; }
+    .steps { grid-template-columns: 1fr; gap: 2rem; }
+    .steps::before { display: none; }
+    .cta-section { flex-direction: column; align-items: flex-start; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 580px) { .features-grid { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .hero-left, .mockup-wrap { animation: none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="wordmark">Teen<span>Lab</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#download">Download</a></li>
+  </ul>
+  <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.App.Lab.Setup.1.0.12-beta.exe" class="btn-nav">Download</a>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-left">
+    <span class="eyebrow">Try free in browser · Full app on desktop</span>
+    <h1>Turn Your Ideas Into <span class="accent">Income.</span></h1>
+    <p class="hero-sub">Teen Lab helps ambitious teenagers discover, simulate, and launch their first real digital product. Try it instantly in your browser — or download the full desktop app with AI-powered features and unlimited access.</p>
+    <div class="hero-cta">
+      <a href="https://teen-lab.vercel.app" class="btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Try Free in Browser
+      </a>
+      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.App.Lab.Setup.1.0.12-beta.exe" class="btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Full App
+      </a>
+    </div>
+    <p class="hero-note">For ages 13–22 · <strong>No account needed</strong> · Windows</p>
+  </div>
+  <div class="mockup-wrap">
+    <div class="app-window">
+      <div class="app-chrome">
+        <div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div>
+        <div class="chrome-title">Teen Lab</div>
+      </div>
+      <div class="app-tabs">
+        <div class="app-tab active">Discover</div>
+        <div class="app-tab">AI Ideas</div>
+        <div class="app-tab">Simulator</div>
+        <div class="app-tab">Launch</div>
+      </div>
+      <div class="app-body">
+        <div class="mock-card">
+          <div class="mock-card-header">
+            <div class="mock-card-title">StudySync Dashboard</div>
+            <div class="mock-card-earn">$120–$290/mo</div>
+          </div>
+          <div class="mock-card-desc">A personal study tracker with streaks and goal visualization.</div>
+          <div class="mock-tags"><span class="mock-tag">Productivity</span><span class="mock-tag">Study</span></div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-header">
+            <div class="mock-card-title">SnapCaption AI</div>
+            <div class="mock-card-earn">$180–$430/mo</div>
+          </div>
+          <div class="mock-card-desc">Viral-ready captions and hashtags for TikTok and Instagram creators.</div>
+          <div class="mock-tags"><span class="mock-tag purple">AI</span><span class="mock-tag">Creators</span></div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-header">
+            <div class="mock-card-title">FitStreak Coach</div>
+            <div class="mock-card-earn">$110–$265/mo</div>
+          </div>
+          <div class="mock-card-desc">Gamified workout streaks with leaderboards and friend competitions.</div>
+          <div class="mock-tags"><span class="mock-tag">Fitness</span><span class="mock-tag">Gaming</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="section-eyebrow">What's Inside</div>
+  <h2>Four Tools. One Mission.</h2>
+  <p class="section-sub">Everything you need to go from "I have an idea" to "I have paying users."</p>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon lime">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <h3>Discover Ideas</h3>
+      <p class="feat-desc">Browse curated micro-product ideas matched to real markets with earning ranges and tech stacks.</p>
+      <span class="feat-badge free">Free Trial</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon purple">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <h3>AI Idea Generator</h3>
+      <p class="feat-desc">Get 3 personalized product ideas based on your skills, interests, and available time. Unique every time.</p>
+      <span class="feat-badge full">Full App</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon teal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h3>Money Simulator</h3>
+      <p class="feat-desc">Type any traffic, conversion, and pricing scenario. Watch projected monthly revenue calculate live.</p>
+      <span class="feat-badge free">Free Trial</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon orange">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <h3>Launch Planner</h3>
+      <p class="feat-desc">Generate a week-by-week launch plan and a complete codegen prompt to paste into Cursor or ChatGPT.</p>
+      <span class="feat-badge pro">Pro Feature</span>
+    </div>
+  </div>
+</section>
+
+<section class="how-section">
+  <div class="section-eyebrow">How It Works</div>
+  <h2>From Idea to Launch</h2>
+  <p class="section-sub">Most teens never start because they don't know where to begin. Teen Lab gives you every next step.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Try It Free</h3>
+      <p>Open the web trial — browse ideas, run the money simulator, and see what's possible. No account, no signup.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Download the App</h3>
+      <p>Get the full desktop app with AI idea generation, unlimited simulations, and the complete launch planner.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Go Pro</h3>
+      <p>Unlock AI-powered launch plans, codegen prompts, idea polishing, and priority updates with a Pro subscription.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <h2>Pick Your Path</h2>
+  <p class="section-sub">Start free, upgrade when you're ready to launch for real.</p>
+  <div class="compare-grid">
+    <div class="plan-card">
+      <div>
+        <div class="plan-name">Web Trial</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem;">In your browser</div>
+      </div>
+      <div class="plan-price">Free</div>
+      <p class="plan-desc">Explore ideas and test the simulator. No download, no signup.</p>
+      <ul class="plan-features">
+        <li class="check">Browse all curated ideas</li>
+        <li class="check">Money Simulator (basic)</li>
+        <li class="check">Works on any device</li>
+        <li class="lock">AI Idea Generator</li>
+        <li class="lock">Polish My Own Idea</li>
+        <li class="lock">Launch Planner</li>
+        <li class="lock">Codegen Prompt</li>
+      </ul>
+      <a href="https://teen-lab.vercel.app" class="plan-btn outline">Try Now</a>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-badge">Most Popular</div>
+      <div>
+        <div class="plan-name">Full App</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem;">Windows desktop</div>
+      </div>
+      <div class="plan-price">Free</div>
+      <p class="plan-desc">The complete app with AI idea generation and full simulator.</p>
+      <ul class="plan-features">
+        <li class="check">Everything in Web Trial</li>
+        <li class="check">AI Idea Generator</li>
+        <li class="check">Money Simulator (3/day)</li>
+        <li class="check">Works offline</li>
+        <li class="lock">Unlimited simulations</li>
+        <li class="lock">Polish My Own Idea (AI)</li>
+        <li class="lock">AI Launch Planner</li>
+        <li class="lock">AI Codegen Prompt</li>
+      </ul>
+      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.App.Lab.Setup.1.0.12-beta.exe" class="plan-btn lime">Download Free</a>
+    </div>
+    <div class="plan-card">
+      <div>
+        <div class="plan-name" style="color:var(--gold);">Pro</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem;">Everything unlocked</div>
+      </div>
+      <div class="plan-price">$4.99<span class="period">/mo</span></div>
+      <p class="plan-desc">AI launch plans, codegen prompts, idea polishing, and priority features.</p>
+      <ul class="plan-features">
+        <li class="check">Everything in Full App</li>
+        <li class="check">Unlimited simulations</li>
+        <li class="check">Polish My Own Idea (AI)</li>
+        <li class="check">AI Launch Planner</li>
+        <li class="check">AI Codegen Prompt Generator</li>
+        <li class="check">Priority new features</li>
+        <li class="check">Future: AI mentor chat</li>
+      </ul>
+      <a href="#" class="plan-btn gold">Coming Soon</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="download">
+  <div>
+    <h2>Ready to Build Something Real?</h2>
+    <p>Try it free in your browser, or download the full desktop app.</p>
+  </div>
+  <div class="cta-buttons">
+    <a href="https://teen-lab.vercel.app" class="btn-dark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Try in Browser
+    </a>
+    <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.App.Lab.Setup.1.0.12-beta.exe" class="btn-dark-outline">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download for Windows
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">
+    <a href="#" class="footer-wordmark">Teen<span>Lab</span></a>
+    <div class="footer-tagline">Build your first digital product.</div>
+  </div>
+  <div class="footer-right">
+    Free trial in browser · Full app for Windows<br>
+    Made for ambitious teenagers.
+  </div>
+</footer>
+
+</body>
+</html>
