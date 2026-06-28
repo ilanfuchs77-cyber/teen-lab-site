@@ -5,506 +5,842 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teen Lab — Build your first digital product</title>
   <meta name="description" content="A toolkit for teenagers to discover, plan, and ship products people pay for.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232dd4bf'/%3E%3Ctext x='50' y='71' font-size='62' text-anchor='middle' fill='%23071018' font-weight='900'%3ET%3C/text%3E%3C/svg%3E">
-  <link rel="preload" as="image" href="assets/peak.jpg">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23FFE34F'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' font-family='Georgia' font-weight='900' fill='%231A1814'%3ET%3C/text%3E%3C/svg%3E">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root{
-    --bg:#000000;
-    --text:#f4f7fb;
-    --text-dim:rgba(228,236,245,0.62);
-    --text-muted:rgba(228,236,245,0.34);
-    --accent:#2dd4bf;
-    --accent-soft:#7af0e0;
-    --accent-deep:#0f766e;
-    --purple:#a78bfa;
-    --yellow:#f5c542;
-    --yellow-soft:#ffe27a;
-
-    --glass:rgba(255,255,255,0.045);
-    --glass-strong:rgba(255,255,255,0.07);
-    --glass-border:rgba(255,255,255,0.10);
-    --glass-border-bright:rgba(255,255,255,0.18);
-    --glass-shadow:0 8px 40px rgba(0,0,0,0.65);
-    --blur:saturate(160%) blur(22px);
+  :root {
+    --paper:    #F4ECD8;
+    --paper-2:  #EEE3C7;
+    --ink:      #1A1814;
+    --ink-soft: #3D3631;
+    --pencil:   #7A7165;
+    --rule:     #C8BCA2;
+    --highlight:#FFE34F;
+    --pink:     #FF7AAB;
+    --kraft:    #8B6F47;
+    --moss:     #5B7A3A;
+    --tape:     rgba(255,227,79,0.55);
   }
 
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  html { scroll-behavior: smooth; }
 
-  .atmosphere{position:fixed;inset:0;z-index:-2;background:radial-gradient(60% 60% at 70% 50%, rgba(45,212,191,0.07), transparent 70%),radial-gradient(50% 50% at 20% 80%, rgba(167,139,250,0.07), transparent 60%)}
-  .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.55;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(26,24,20,0.06) 1px, transparent 0),
+      radial-gradient(circle at 30% 20%, rgba(255,227,79,0.18), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,122,171,0.10), transparent 35%);
+    background-size: 22px 22px, 100% 100%, 100% 100%;
+  }
+
+  /* Paper edge vignette */
+  body::before {
+    content:''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    box-shadow: inset 0 0 80px rgba(139,111,71,0.18);
+  }
+
+  main { position: relative; z-index: 1; }
+
+  /* ───── TYPOGRAPHY ───── */
+  .display {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .italic { font-style: italic; font-weight: 700; }
+  .mono { font-family: 'Iowan Old Style', 'Georgia', serif; font-feature-settings: "ss01"; }
+  .label {
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .underline-wave {
+    background-image: linear-gradient(transparent 60%, var(--highlight) 60%, var(--highlight) 92%, transparent 92%);
+    padding: 0 0.15em;
+  }
+  .ink-circle {
+    position: relative; display: inline-block;
+  }
+  .ink-circle::after {
+    content:''; position: absolute; inset: -8px -14px;
+    border: 2px solid var(--ink); border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+    transform: rotate(-2deg);
+    pointer-events: none;
+  }
 
   /* ───── NAV ───── */
-  header{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;width:min(1180px,calc(100% - 32px));padding:0.7rem 0.7rem 0.7rem 1.4rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.60);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,0.10);border-radius:999px;box-shadow:0 8px 30px rgba(0,0,0,0.40);transition:background .4s,border-color .4s}
-  header.scrolled{background:rgba(10,10,10,0.80);border-color:rgba(255,255,255,0.08)}
-  header::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.07),transparent 45%);-webkit-mask:linear-gradient(#000,transparent 60%);mask:linear-gradient(#000,transparent 60%)}
-  .logo{font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none;letter-spacing:0.02em;display:flex;align-items:center;gap:0.5rem}
-  .logo-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
-  nav{display:flex;gap:0.4rem;align-items:center}
-  nav a:not(.nav-cta){color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.84rem;font-weight:500;padding:0.5rem 0.9rem;border-radius:999px;transition:color .2s,background .2s}
-  nav a:not(.nav-cta):hover{color:#fff;background:rgba(255,255,255,0.08)}
-  .nav-cta{background:#fff;color:#000;padding:0.55rem 1.3rem;border-radius:999px;text-decoration:none;font-weight:700;font-size:0.82rem;letter-spacing:0.01em;transition:transform .15s,box-shadow .15s}
-  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(122,240,224,0.35)}
-
-  /* ───── HERO — dark split ───── */
-  .hero{position:relative;min-height:100vh;display:grid;grid-template-columns:40fr 60fr;align-items:center;overflow:hidden;background:#000}
-  .hero-left{padding:8rem 2.5rem 8rem 5rem;display:flex;flex-direction:column;gap:1.8rem;z-index:2}
-  .hero-right{position:relative;height:100vh}
-  #heroCanvas{position:absolute;inset:0;width:100%;height:100%}
-
-  .hero-glow{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(60% 60% at 65% 50%,rgba(45,212,191,0.08),transparent 70%),radial-gradient(40% 40% at 80% 30%,rgba(167,139,250,0.06),transparent 60%)}
-
-  .eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--yellow);padding:0.45rem 1rem;border-radius:999px;background:rgba(245,197,66,0.10);border:1px solid rgba(245,197,66,0.28);width:fit-content}
-  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--yellow);box-shadow:0 0 8px var(--yellow)}
-
-  .hero-title{font-size:clamp(2.8rem,4.5vw,4.2rem);font-weight:200;line-height:1;letter-spacing:-0.04em;color:#fff}
-  .hero-title strong{font-weight:800;display:block}
-  .hero-title .grad{background:linear-gradient(120deg,var(--yellow-soft),var(--yellow));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-
-  .hero-sub{font-size:1rem;color:var(--text-dim);max-width:420px;font-weight:400;line-height:1.65}
-
-  .hero-ctas{display:flex;gap:0.9rem;flex-wrap:wrap;margin-top:0.4rem}
-  .btn{display:inline-flex;align-items:center;gap:0.55rem;padding:0.92rem 1.7rem;border-radius:999px;text-decoration:none;font-weight:600;font-size:0.9rem;letter-spacing:0.01em;transition:transform .18s,box-shadow .18s,background .2s,border-color .2s}
-  .btn svg{width:15px;height:15px}
-  .hero .btn-primary{background:#fff;color:#000;border:1px solid transparent}
-  .hero .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(122,240,224,0.25)}
-  .hero .btn-glass{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.14)}
-  .hero .btn-glass:hover{transform:translateY(-2px);background:rgba(255,255,255,0.10)}
-
-  .hero-stats{display:flex;gap:2.5rem;margin-top:0.5rem}
-  .hero-stat .num{font-size:1.6rem;font-weight:700;letter-spacing:-0.03em;color:#fff}
-  .hero-stat .lbl{font-size:0.72rem;color:var(--text-muted);font-weight:400;letter-spacing:0.05em;text-transform:uppercase;margin-top:0.1rem}
-
-  .scroll-ind{position:absolute;left:20%;bottom:2.8rem;transform:translateX(-50%);z-index:4;width:46px;height:46px}
-  .scroll-ind .ring{position:absolute;inset:0;border:1px solid rgba(255,255,255,0.3);border-radius:50%}
-  .scroll-ind .orbit{position:absolute;inset:0;animation:spin 5s linear infinite}
-  .scroll-ind .orbit::before{content:'';position:absolute;top:-3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
-  .scroll-ind .chev{position:absolute;left:50%;top:50%;width:9px;height:9px;border-right:1.5px solid rgba(255,255,255,0.6);border-bottom:1.5px solid rgba(255,255,255,0.6);transform:translate(-50%,-65%) rotate(45deg);animation:bob 1.8s ease-in-out infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  @keyframes bob{0%,100%{transform:translate(-50%,-75%) rotate(45deg)}50%{transform:translate(-50%,-45%) rotate(45deg)}}
-
-  /* ───── BODY (dark glass) ───── */
-  section{padding:7rem 2rem;position:relative;max-width:1180px;margin:0 auto}
-  .section-label{font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;text-align:center}
-  .section-title{font-size:clamp(2rem,4.5vw,3.4rem);font-weight:200;line-height:1.02;letter-spacing:-0.03em;margin:0 auto 1.2rem;max-width:620px;text-align:center}
-  .section-title strong{font-weight:700}
-  .section-desc{color:var(--text-dim);font-size:1.02rem;max-width:520px;margin:0 auto 4rem;line-height:1.65;text-align:center;font-weight:300}
-
-  .glass-card{position:relative;background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:var(--glass-shadow);transition:transform .25s,border-color .3s,background .3s;overflow:hidden}
-  .glass-card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.10),transparent 40%);-webkit-mask:linear-gradient(#000,transparent 55%);mask:linear-gradient(#000,transparent 55%)}
-  .glass-card:hover{transform:translateY(-5px);border-color:var(--glass-border-bright);background:var(--glass-strong)}
-
-  .features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.3rem}
-  .feature-card{padding:2.1rem 1.9rem}
-  .feature-num{font-size:0.62rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem}
-  .feature-card h3{font-size:1.35rem;font-weight:600;letter-spacing:-0.01em;margin-bottom:0.7rem}
-  .feature-card h3 .a{color:var(--accent-soft)}
-  .feature-card p{color:var(--text-dim);font-size:0.92rem;line-height:1.62;font-weight:300}
-  .pill{display:inline-block;margin-top:1.3rem;font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:999px;background:rgba(45,212,191,0.14);color:var(--accent-soft);border:1px solid rgba(45,212,191,0.22)}
-  .pill.pro{background:rgba(167,139,250,0.14);color:var(--purple);border-color:rgba(167,139,250,0.25)}
-
-  .plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
-  .plan-card{padding:2.1rem 1.7rem;display:flex;flex-direction:column;gap:1.2rem}
-  .plan-card.featured{border-color:rgba(45,212,191,0.4);background:linear-gradient(180deg,rgba(45,212,191,0.08),var(--glass) 45%)}
-  .plan-head{display:flex;justify-content:space-between;align-items:flex-start}
-  .plan-name{font-weight:600;font-size:1.2rem;letter-spacing:-0.01em}
-  .plan-sub{font-size:0.76rem;color:var(--text-muted);margin-top:0.2rem}
-  .plan-price{font-size:2.4rem;font-weight:300;letter-spacing:-0.03em}
-  .plan-price strong{font-weight:700}
-  .plan-price .period{font-size:0.85rem;font-weight:400;color:var(--text-muted)}
-  .badge{padding:0.3rem 0.75rem;border-radius:999px;font-size:0.64rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;border:1px solid var(--glass-border);color:var(--text-dim);background:var(--glass)}
-  .badge.accent{color:var(--accent-soft);border-color:rgba(45,212,191,0.3)}
-  .plan-features{list-style:none;display:flex;flex-direction:column;gap:0.55rem;flex:1}
-  .plan-features li{font-size:0.86rem;color:var(--text-dim);padding-left:1.35rem;position:relative;line-height:1.45;font-weight:300}
-  .plan-features li::before{content:'';position:absolute;left:0;top:6px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
-  .plan-features li.locked{color:var(--text-muted);opacity:0.55}
-  .plan-features li.locked::before{background:var(--text-muted)}
-  .plan-btn{text-align:center;text-decoration:none;padding:0.82rem;border-radius:999px;font-weight:600;font-size:0.84rem;letter-spacing:0.01em;border:1px solid var(--glass-border-bright);background:var(--glass-strong);color:var(--text);margin-top:auto;backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);transition:background .2s,border-color .2s,transform .15s}
-  .plan-btn:hover{background:rgba(255,255,255,0.12);transform:translateY(-1px)}
-  .plan-btn.filled{background:#fff;color:#06121a;border-color:transparent}
-  .plan-btn.filled:hover{box-shadow:0 8px 26px rgba(122,240,224,0.25)}
-
-  .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
-  .step-card{padding:2rem 1.8rem}
-  .step-num{font-size:2.6rem;font-weight:200;letter-spacing:-0.03em;color:var(--accent-soft);line-height:1;margin-bottom:0.9rem}
-  .step-card h4{font-weight:600;font-size:1.12rem;letter-spacing:-0.01em;margin-bottom:0.55rem}
-  .step-card p{color:var(--text-dim);font-size:0.9rem;line-height:1.6;font-weight:300}
-
-  .cta-wrap{max-width:1180px;margin:0 auto;padding:0 2rem 7rem}
-  .cta-block{padding:4.5rem 3.5rem;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center}
-  .cta-block::after{content:'';position:absolute;top:-90px;right:-60px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,191,0.22),transparent 70%);filter:blur(50px);pointer-events:none}
-  .cta-block h2{font-size:clamp(1.9rem,3.2vw,2.9rem);font-weight:200;line-height:1.02;letter-spacing:-0.03em;position:relative;z-index:1}
-  .cta-block h2 .grad{background:linear-gradient(120deg,var(--accent-soft),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-  .cta-block p{color:var(--text-dim);margin-top:0.8rem;font-size:0.96rem;font-weight:300;position:relative;z-index:1}
-  .cta-btns{display:flex;flex-direction:column;gap:0.8rem;position:relative;z-index:1}
-  .cta-block .btn-primary{background:#fff;color:#06121a}
-  .cta-block .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 38px rgba(122,240,224,0.28)}
-  .cta-block .btn-glass{background:var(--glass-strong);color:var(--text);border:1px solid var(--glass-border-bright);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur)}
-  .cta-block .btn-glass:hover{transform:translateY(-2px);background:rgba(255,255,255,0.12)}
-
-  footer{max-width:1180px;margin:0 auto;padding:3rem 2rem 2.5rem;border-top:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap}
-  .footer-brand{font-weight:600;font-size:1.1rem;letter-spacing:0.01em;color:var(--text);text-decoration:none}
-  .footer-tag{font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;font-weight:300}
-  .footer-meta{font-size:0.78rem;color:var(--text-muted);text-align:right;line-height:1.8;font-weight:300}
-  .footer-meta a{color:var(--accent-soft);text-decoration:none}
-  .footer-meta a:hover{text-decoration:underline}
-
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
-  .reveal.in{opacity:1;transform:none}
-
-  @media(max-width:900px){
-    .hero{grid-template-columns:1fr;min-height:100svh}
-    .hero-left{padding:7rem 1.6rem 2rem;align-items:center;text-align:center}
-    .hero-sub{max-width:100%}
-    .hero-right{height:55vw;min-height:280px}
-    .hero-stats{justify-content:center}
-    .scroll-ind{left:50%}
-    section{padding:5rem 1.4rem}
-    .features-grid,.plans-grid,.steps-grid{grid-template-columns:1fr}
-    .cta-block{grid-template-columns:1fr;padding:2.6rem 1.8rem}
-    nav a:not(.nav-cta){display:none}
+  header.topnav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(244,236,216,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.9rem 6vw;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
   }
-  @media(prefers-reduced-motion:reduce){
-    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .logo {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900; font-size: 1.4rem;
+    color: var(--ink); text-decoration: none;
+    letter-spacing: -0.02em;
+    display: inline-flex; align-items: baseline; gap: 0.15em;
+  }
+  .logo .dot {
+    display: inline-block; width: 8px; height: 8px; background: var(--pink);
+    border-radius: 50%; margin-left: 4px;
+  }
+  nav.links { display: flex; gap: 2rem; }
+  nav.links a {
+    color: var(--ink-soft); text-decoration: none;
+    font-size: 0.95rem; font-style: italic;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  nav.links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: var(--paper);
+    padding: 0.55rem 1.2rem; border-radius: 999px;
+    text-decoration: none; font-weight: 700;
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: transform 0.15s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); }
+
+  /* ───── HERO ───── */
+  .hero {
+    padding: 5rem 6vw 6rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .hero-left { position: relative; }
+
+  .meta-row {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .stamp {
+    border: 1.5px solid var(--ink);
+    padding: 0.3rem 0.7rem; border-radius: 4px;
+    transform: rotate(-2deg);
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 700;
+    background: var(--paper);
+  }
+  .stamp.pink { color: var(--pink); border-color: var(--pink); transform: rotate(1.5deg); }
+
+  h1.hero-title {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 6.5vw, 5.6rem);
+    line-height: 0.92; letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 1.75rem;
+    text-wrap: balance;
+  }
+  h1.hero-title .italic-accent {
+    font-style: italic; font-weight: 700; color: var(--ink);
+    position: relative; display: inline-block;
+  }
+  h1.hero-title .italic-accent::before {
+    content:''; position: absolute; inset: 78% -0.1em 0% -0.1em;
+    background: var(--pink); opacity: 0.55; z-index: -1;
+    border-radius: 2px 8px 4px 6px;
+    transform: rotate(-1deg);
+  }
+
+  .lede {
+    font-size: 1.18rem; color: var(--ink-soft);
+    max-width: 460px; line-height: 1.55;
+    margin-bottom: 2.25rem;
+  }
+  .lede em { font-style: italic; color: var(--ink); }
+
+  .hero-cta-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--ink); color: var(--paper);
+    padding: 0.95rem 1.7rem; border-radius: 999px;
+    text-decoration: none; font-weight: 700;
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    font-size: 0.9rem; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    transition: transform 0.18s, box-shadow 0.18s;
+    box-shadow: 4px 4px 0 var(--ink);
+    border: 1.5px solid var(--ink);
+  }
+  .btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  .btn-secondary {
+    color: var(--ink);
+    padding: 0.95rem 1.4rem; border-radius: 999px;
+    text-decoration: none; font-weight: 700;
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    font-size: 0.9rem; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    transition: background 0.18s;
+  }
+  .btn-secondary:hover { background: var(--highlight); }
+  .btn-secondary svg { width: 16px; height: 16px; }
+
+  .arrow-scribble {
+    position: absolute;
+    bottom: -50px; left: 60%;
+    width: 100px; height: 60px;
+    color: var(--ink);
+    transform: rotate(8deg);
+  }
+
+  /* ───── POLAROID APP MOCKUP ───── */
+  .polaroid-stack { position: relative; min-height: 480px; }
+
+  .polaroid {
+    background: #FBFAF4;
+    padding: 14px 14px 56px;
+    box-shadow:
+      0 1px 2px rgba(26,24,20,0.05),
+      0 12px 24px -8px rgba(26,24,20,0.18),
+      0 30px 60px -15px rgba(26,24,20,0.22);
+    border-radius: 2px;
+    position: absolute;
+    transition: transform 0.3s ease;
+  }
+  .polaroid:hover { transform: rotate(0deg) translateY(-4px) !important; }
+
+  .polaroid-caption {
+    position: absolute; bottom: 18px; left: 0; right: 0;
+    text-align: center;
+    font-family: 'Caveat', 'Bradley Hand', cursive;
+    font-style: italic;
+    font-size: 1.1rem; color: var(--ink-soft);
+  }
+
+  /* App phone-ish mockup inside polaroid */
+  .phone-mock {
+    width: 100%; aspect-ratio: 3/4;
+    background: linear-gradient(165deg, #0F1426 0%, #1A2238 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .phone-header {
+    padding: 18px 18px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .phone-header-row { display: flex; justify-content: space-between; align-items: center; }
+  .phone-logo { font-size: 0.78rem; font-weight: 700; color: var(--highlight); letter-spacing: 0.1em; }
+  .phone-badge { font-size: 0.55rem; color: rgba(255,255,255,0.5); font-family: monospace; }
+
+  .phone-tabs {
+    display: flex; gap: 4px; padding: 8px 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .phone-tab {
+    flex: 1; padding: 6px 4px;
+    font-size: 0.55rem; text-align: center;
+    color: rgba(255,255,255,0.4);
+    border-bottom: 2px solid transparent;
+    font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .phone-tab.active { color: var(--highlight); border-bottom-color: var(--highlight); }
+
+  .phone-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .idea-row {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .idea-row-top { display: flex; justify-content: space-between; align-items: center; }
+  .idea-title { font-size: 0.7rem; font-weight: 700; color: #fff; font-family: system-ui; }
+  .idea-money { font-size: 0.62rem; color: var(--highlight); font-weight: 700; font-family: monospace; }
+  .idea-desc { font-size: 0.55rem; color: rgba(255,255,255,0.5); line-height: 1.4; font-family: system-ui; }
+  .idea-tags { display: flex; gap: 4px; margin-top: 2px; }
+  .idea-tag {
+    font-size: 0.5rem; color: rgba(255,255,255,0.7); font-family: system-ui;
+    padding: 2px 5px; border-radius: 3px;
+    background: rgba(255,227,79,0.15);
+  }
+
+  /* Tape */
+  .tape {
+    position: absolute;
+    background: var(--tape);
+    width: 80px; height: 22px;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .polaroid-1 {
+    width: 320px; top: 10px; left: 80px; transform: rotate(-5deg); z-index: 3;
+  }
+  .polaroid-1 .tape { top: -8px; left: 110px; transform: rotate(-3deg); }
+
+  .polaroid-2 {
+    width: 220px; top: 320px; left: 10px; transform: rotate(4deg); z-index: 2;
+    background: var(--paper-2);
+    padding: 1.2rem;
+    border-radius: 4px;
+  }
+  .polaroid-2 .tape { top: -8px; left: 70px; transform: rotate(2deg); background: var(--pink); opacity: 0.7; }
+
+  .sticky-note-content {
+    font-family: 'Caveat', 'Bradley Hand', cursive;
+    font-style: italic;
+    font-size: 1.15rem; color: var(--ink);
+    line-height: 1.35;
+  }
+  .sticky-note-content strong { background: var(--highlight); padding: 0 4px; font-style: italic; }
+
+  /* ───── SECTIONS ───── */
+  section { padding: 6rem 6vw; position: relative; }
+
+  .section-header {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    align-items: end; margin-bottom: 4rem;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 2rem;
+  }
+  .section-header h2 {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    line-height: 0.95; letter-spacing: -0.02em;
+    color: var(--ink); text-wrap: balance;
+  }
+  .section-header .italic { font-style: italic; }
+  .section-meta {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    text-align: left;
+  }
+  .section-meta .nbr {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-style: italic; font-size: 2rem; color: var(--pencil);
+    line-height: 1;
+  }
+  .section-meta .blurb { color: var(--ink-soft); font-size: 0.95rem; max-width: 360px; }
+
+  /* ───── TOOLS GRID ───── */
+  .tools-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
+  }
+  .tool {
+    background: var(--paper-2);
+    padding: 2rem 1.8rem 2rem;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    position: relative;
+    transition: transform 0.18s;
+  }
+  .tool:hover { transform: translateY(-3px); }
+  .tool:nth-child(odd) { transform: rotate(-0.5deg); }
+  .tool:nth-child(even) { transform: rotate(0.5deg); }
+  .tool:nth-child(odd):hover { transform: rotate(-0.5deg) translateY(-3px); }
+  .tool:nth-child(even):hover { transform: rotate(0.5deg) translateY(-3px); }
+
+  .tool-tag {
+    position: absolute; top: -10px; right: 1.5rem;
+    background: var(--ink); color: var(--paper);
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.25rem 0.7rem; border-radius: 4px;
+  }
+  .tool-tag.pink { background: var(--pink); }
+  .tool-tag.moss { background: var(--moss); }
+  .tool-tag.highlight { background: var(--highlight); color: var(--ink); }
+
+  .tool-num {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--pencil);
+    margin-bottom: 0.5rem;
+  }
+  .tool h3 {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900;
+    font-size: 1.6rem;
+    line-height: 1; letter-spacing: -0.015em;
+    margin-bottom: 0.85rem;
+  }
+  .tool h3 em { font-style: italic; }
+  .tool p { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.55; }
+
+  /* ───── PLANS ───── */
+  .plans-section {
+    background:
+      repeating-linear-gradient(180deg, transparent 0 27px, var(--rule) 27px 28px);
+    background-color: var(--paper-2);
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .plans-section .section-header { border-bottom-color: var(--ink); }
+
+  .plans-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+  }
+  .plan {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 2rem 1.6rem;
+    display: flex; flex-direction: column; gap: 1.1rem;
+    position: relative;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .plan.featured { background: var(--highlight); }
+  .plan.featured .stamp { background: var(--paper); border-color: var(--ink); }
+
+  .plan-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .plan-name {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900; font-size: 1.4rem; letter-spacing: -0.01em;
+  }
+  .plan-name .italic { font-style: italic; }
+  .plan-sub { font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.2rem; }
+  .plan-price {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900;
+    font-size: 2.4rem; line-height: 1; letter-spacing: -0.03em;
+  }
+  .plan-price .period { font-size: 0.95rem; font-weight: 400; color: var(--ink-soft); }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  .plan-features li {
+    font-size: 0.92rem; color: var(--ink-soft);
+    padding-left: 1.3rem; position: relative; line-height: 1.4;
+  }
+  .plan-features li::before {
+    content: '✓'; position: absolute; left: 0; top: 0;
+    font-weight: 900; color: var(--moss);
+  }
+  .plan-features li.locked { color: var(--pencil); opacity: 0.55; }
+  .plan-features li.locked::before { content: '×'; color: var(--pencil); }
+
+  .plan-btn {
+    text-align: center; text-decoration: none;
+    padding: 0.85rem; border-radius: 999px;
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    font-weight: 700; font-size: 0.85rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border: 1.5px solid var(--ink);
+    background: var(--ink); color: var(--paper);
+    margin-top: auto;
+    transition: transform 0.15s;
+  }
+  .plan-btn.outline { background: transparent; color: var(--ink); }
+  .plan-btn.outline:hover { background: var(--ink); color: var(--paper); }
+  .plan-btn:hover { transform: translateY(-1px); }
+
+  /* ───── PROCESS ───── */
+  .process {
+    background: var(--paper);
+  }
+  .process-list {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;
+  }
+  .process-step {
+    border-top: 1.5px solid var(--ink);
+    padding-top: 1.2rem;
+  }
+  .process-num {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900; font-style: italic;
+    font-size: 3.2rem; line-height: 1;
+    color: var(--ink);
+  }
+  .process-step h4 {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900; font-size: 1.3rem;
+    margin: 0.5rem 0 0.7rem;
+  }
+  .process-step h4 em { font-style: italic; }
+  .process-step p { color: var(--ink-soft); font-size: 0.95rem; }
+
+  /* ───── CTA ───── */
+  .cta-card {
+    background: var(--ink); color: var(--paper);
+    padding: 4rem 3rem;
+    border-radius: 6px;
+    display: grid; grid-template-columns: 1fr auto; gap: 3rem;
+    align-items: center;
+    box-shadow: 12px 12px 0 var(--pink);
+    margin: 0 6vw;
+    margin-bottom: 6rem;
+  }
+  .cta-card h2 {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900; font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 0.98; letter-spacing: -0.02em;
+    color: var(--paper); text-wrap: balance;
+  }
+  .cta-card h2 em { font-style: italic; color: var(--highlight); }
+  .cta-card p { color: rgba(244,236,216,0.7); margin-top: 0.7rem; font-size: 1rem; }
+
+  .cta-actions { display: flex; flex-direction: column; gap: 0.7rem; }
+  .cta-actions a {
+    background: var(--highlight); color: var(--ink);
+    padding: 1rem 2rem; border-radius: 999px;
+    text-decoration: none; font-weight: 700;
+    font-family: 'Helvetica Neue', system-ui, sans-serif;
+    font-size: 0.95rem; letter-spacing: 0.06em;
+    text-transform: uppercase; text-align: center;
+    border: 1.5px solid var(--highlight);
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+    white-space: nowrap;
+  }
+  .cta-actions a.outline {
+    background: transparent; color: var(--paper); border-color: var(--paper);
+  }
+  .cta-actions a svg { width: 16px; height: 16px; }
+
+  /* ───── FOOTER ───── */
+  footer.footer {
+    padding: 3rem 6vw 2rem;
+    border-top: 1.5px solid var(--ink);
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 2rem; flex-wrap: wrap;
+  }
+  footer .footer-mark {
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    font-weight: 900; font-size: 1.5rem;
+    color: var(--ink); text-decoration: none;
+  }
+  footer .footer-tag { color: var(--ink-soft); font-style: italic; margin-top: 0.3rem; }
+  footer .footer-meta { font-size: 0.82rem; color: var(--ink-soft); text-align: right; line-height: 1.6; }
+  footer .footer-meta a { color: var(--ink); text-decoration: underline; }
+
+  /* ───── RESPONSIVE ───── */
+  @media (max-width: 920px) {
+    .hero { grid-template-columns: 1fr; gap: 3rem; padding: 3rem 6vw 4rem; }
+    .polaroid-stack { min-height: 540px; max-width: 380px; margin: 0 auto; }
+    .section-header { grid-template-columns: 1fr; gap: 1rem; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .plans-grid { grid-template-columns: 1fr; }
+    .process-list { grid-template-columns: 1fr; gap: 2rem; }
+    .cta-card { grid-template-columns: 1fr; padding: 2.5rem 1.8rem; }
+    nav.links { display: none; }
+  }
+
+  @media (max-width: 520px) {
+    .polaroid-1 { width: 260px; left: 30px; }
+    .polaroid-2 { width: 200px; top: 290px; left: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 </style>
 </head>
 <body>
 
-<div class="atmosphere"></div>
-<div class="grain"></div>
-
-<header id="hdr">
-  <a href="#" class="logo">Teen&nbsp;Lab<span class="logo-dot"></span></a>
-  <nav>
-    <a href="#features">Features</a>
+<header class="topnav">
+  <a href="#" class="logo">Teen Lab<span class="dot"></span></a>
+  <nav class="links">
+    <a href="#tools">Tools</a>
     <a href="#plans">Plans</a>
-    <a href="#how">How it works</a>
-    <a href="https://teen-lab.vercel.app" class="nav-cta">Open App</a>
+    <a href="#process">How it works</a>
   </nav>
+  <a href="https://teen-lab.vercel.app" class="nav-cta">Open the App</a>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-glow"></div>
+<main>
 
-  <!-- LEFT: text -->
-  <div class="hero-left">
-    <div class="eyebrow"><span class="dot"></span>For ambitious teenagers</div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="meta-row">
+        <span class="stamp">Beta · v1.0.12</span>
+        <span class="stamp pink">For ages 13–22</span>
+      </div>
+      <h1 class="hero-title">
+        Build something <span class="italic-accent">people pay for</span> — before you even finish high school.
+      </h1>
+      <p class="lede">
+        Teen Lab is a <em>toolkit</em> for ambitious teenagers who want to discover, simulate, and ship their first real digital product. Not a side gig. Not a school project. <em>Something people pay for.</em>
+      </p>
+      <div class="hero-cta-row">
+        <a href="https://teen-lab.vercel.app" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Try in browser
+        </a>
+        <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Get the desktop app
+        </a>
+      </div>
 
-    <h1 class="hero-title">
-      <strong><span class="grad">Discover.</span><br>Build. Earn.</strong>
-    </h1>
-
-    <p class="hero-sub">The toolkit to discover, simulate, and ship your first real digital product — the kind people actually pay for.</p>
-
-    <div class="hero-ctas">
-      <a href="https://teen-lab.vercel.app" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Try in browser
-      </a>
-      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="btn btn-glass">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Desktop app
-      </a>
+      <svg class="arrow-scribble" viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M2 30 Q 40 5, 75 30 T 110 32" stroke-dasharray="0"/>
+        <path d="M100 22 L 112 32 L 100 42"/>
+      </svg>
     </div>
 
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="num">16+</div><div class="lbl">Product ideas</div></div>
-      <div class="hero-stat"><div class="num">Free</div><div class="lbl">To start</div></div>
-      <div class="hero-stat"><div class="num">AI</div><div class="lbl">Powered</div></div>
+    <div class="polaroid-stack">
+      <div class="polaroid polaroid-1">
+        <div class="tape"></div>
+        <div class="phone-mock">
+          <div class="phone-header">
+            <div class="phone-header-row">
+              <div class="phone-logo">TEEN LAB</div>
+              <div class="phone-badge">v1.0.12</div>
+            </div>
+          </div>
+          <div class="phone-tabs">
+            <div class="phone-tab active">Discover</div>
+            <div class="phone-tab">AI Ideas</div>
+            <div class="phone-tab">Sim</div>
+            <div class="phone-tab">Launch</div>
+          </div>
+          <div class="phone-body">
+            <div class="idea-row">
+              <div class="idea-row-top">
+                <div class="idea-title">StudySync Dashboard</div>
+                <div class="idea-money">$120–$290</div>
+              </div>
+              <div class="idea-desc">Personal study tracker with streaks and goal visuals.</div>
+              <div class="idea-tags">
+                <span class="idea-tag">Productivity</span>
+                <span class="idea-tag">Study</span>
+              </div>
+            </div>
+            <div class="idea-row">
+              <div class="idea-row-top">
+                <div class="idea-title">SnapCaption AI</div>
+                <div class="idea-money">$180–$430</div>
+              </div>
+              <div class="idea-desc">Viral captions and hashtags for TikTok and Instagram.</div>
+              <div class="idea-tags">
+                <span class="idea-tag">AI</span>
+                <span class="idea-tag">Creators</span>
+              </div>
+            </div>
+            <div class="idea-row">
+              <div class="idea-row-top">
+                <div class="idea-title">FitStreak Coach</div>
+                <div class="idea-money">$110–$265</div>
+              </div>
+              <div class="idea-desc">Gamified workout streaks with leaderboards.</div>
+              <div class="idea-tags">
+                <span class="idea-tag">Fitness</span>
+                <span class="idea-tag">Gaming</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="polaroid-caption">first build — 6/27</div>
+      </div>
+
+      <div class="polaroid polaroid-2">
+        <div class="tape"></div>
+        <p class="sticky-note-content">
+          made <strong>$340</strong> from my study app in two weeks. didn't even tell my parents 🤫
+        </p>
+        <p style="font-family:'Caveat',cursive;font-size:0.95rem;color:var(--pencil);margin-top:0.4rem;text-align:right;">— Maya, 16</p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- RIGHT: 3D canvas -->
-  <div class="hero-right">
-    <canvas id="heroCanvas"></canvas>
-  </div>
+  <!-- TOOLS -->
+  <section id="tools">
+    <div class="section-header">
+      <h2>Four tools, one <span class="italic">obvious</span> mission.</h2>
+      <div class="section-meta">
+        <div class="nbr">01.</div>
+        <div class="label">Inside the kit</div>
+        <p class="blurb">Everything you need to move from <em>"I have an idea"</em> to <em>"I have paying users."</em> No business degree. No pitch deck.</p>
+      </div>
+    </div>
 
-  <a href="#features" class="scroll-ind" aria-label="Scroll down">
-    <span class="ring"></span><span class="orbit"></span><span class="chev"></span>
-  </a>
-</section>
+    <div class="tools-grid">
+      <article class="tool">
+        <span class="tool-tag highlight">Free trial</span>
+        <div class="tool-num">i.</div>
+        <h3>Discover <em>ideas</em></h3>
+        <p>Sixteen curated micro-products that real teens are actually shipping. Each one comes with earning ranges, the tech stack to build it, and the first move to make today.</p>
+      </article>
 
-<!-- FEATURES -->
-<section id="features">
-  <div class="section-label reveal">Inside the kit</div>
-  <h2 class="section-title reveal">Four tools. <strong>One mission.</strong></h2>
-  <p class="section-desc reveal">Everything you need to move from an idea to a product with paying users. No business degree required.</p>
+      <article class="tool">
+        <span class="tool-tag">Full app</span>
+        <div class="tool-num">ii.</div>
+        <h3>The AI <em>idea generator</em></h3>
+        <p>Tell it your skills, interests, and weekly time budget. Get three personalized product ideas every run — with earnings, stack, and first step tailored to your exact profile.</p>
+      </article>
 
-  <div class="features-grid">
-    <article class="glass-card feature-card reveal">
-      <div class="feature-num">01</div>
-      <h3>Discover <span class="a">ideas</span></h3>
-      <p>Curated micro-products that real teens are shipping. Each one comes with earning ranges, tech stacks, and the first move to make today.</p>
-      <span class="pill">Free</span>
-    </article>
-    <article class="glass-card feature-card reveal">
-      <div class="feature-num">02</div>
-      <h3>AI idea <span class="a">generator</span></h3>
-      <p>Tell it your skills, interests, and time budget. Get three personalized product ideas every run — matched to your exact profile.</p>
-      <span class="pill">Full app</span>
-    </article>
-    <article class="glass-card feature-card reveal">
-      <div class="feature-num">03</div>
-      <h3>Money <span class="a">simulator</span></h3>
-      <p>Type in your traffic, conversion rate, and pricing. Watch projected monthly revenue update live across ads, affiliates, and subscriptions.</p>
-      <span class="pill">Free</span>
-    </article>
-    <article class="glass-card feature-card reveal">
-      <div class="feature-num">04</div>
-      <h3>Launch <span class="a">planner</span></h3>
-      <p>Pick any idea — the planner builds a week-by-week roadmap plus a codegen prompt you can paste into Cursor or ChatGPT to start building.</p>
-      <span class="pill pro">Pro</span>
-    </article>
-  </div>
-</section>
+      <article class="tool">
+        <span class="tool-tag highlight">Free trial</span>
+        <div class="tool-num">iii.</div>
+        <h3>The <em>money</em> simulator</h3>
+        <p>Type in your traffic, conversion rate, ad CPM, and pricing. Watch projected monthly revenue update live across ad revenue, affiliates, and subscriptions.</p>
+      </article>
 
-<!-- PLANS -->
-<section id="plans">
-  <div class="section-label reveal">Pricing</div>
-  <h2 class="section-title reveal">Pick <strong>your path.</strong></h2>
-  <p class="section-desc reveal">Start free in the browser, download the full desktop app, or go Pro for AI tools. Switch whenever.</p>
+      <article class="tool">
+        <span class="tool-tag pink">Pro feature</span>
+        <div class="tool-num">iv.</div>
+        <h3>The <em>launch</em> planner</h3>
+        <p>Pick any idea and the planner builds a week-by-week launch roadmap plus a codegen prompt you can paste straight into Cursor or ChatGPT to start building.</p>
+      </article>
+    </div>
+  </section>
 
-  <div class="plans-grid">
-    <article class="glass-card plan-card reveal">
-      <div class="plan-head"><div><div class="plan-name">Web Trial</div><div class="plan-sub">Browser, no signup</div></div><span class="badge">Free</span></div>
-      <div class="plan-price"><strong>Free</strong></div>
-      <ul class="plan-features">
-        <li>Browse 16 curated ideas</li>
-        <li>Money Simulator (basic)</li>
-        <li>Works on any device</li>
-        <li class="locked">AI Idea Generator</li>
-        <li class="locked">Launch Planner</li>
-      </ul>
-      <a href="https://teen-lab.vercel.app" class="plan-btn">Try Now</a>
-    </article>
+  <!-- PLANS -->
+  <section class="plans-section" id="plans">
+    <div class="section-header">
+      <h2>Pick your <span class="italic">path.</span></h2>
+      <div class="section-meta">
+        <div class="nbr">02.</div>
+        <div class="label">Three ways in</div>
+        <p class="blurb">Start free in the browser, download the full desktop app, or go Pro for the AI tools. Switch whenever.</p>
+      </div>
+    </div>
 
-    <article class="glass-card plan-card featured reveal">
-      <div class="plan-head"><div><div class="plan-name">Full App</div><div class="plan-sub">Windows desktop, offline</div></div><span class="badge accent">Popular</span></div>
-      <div class="plan-price"><strong>Free</strong></div>
-      <ul class="plan-features">
-        <li>Everything in Web Trial</li>
-        <li>AI Idea Generator</li>
-        <li>Money Simulator (3/day)</li>
-        <li>Works offline</li>
-        <li class="locked">AI Launch Planner</li>
-      </ul>
-      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="plan-btn filled">Download Free</a>
-    </article>
+    <div class="plans-grid">
+      <article class="plan">
+        <div class="plan-header">
+          <div>
+            <div class="plan-name">Web <span class="italic">Trial</span></div>
+            <div class="plan-sub">In your browser, no signup</div>
+          </div>
+          <span class="stamp">Free</span>
+        </div>
+        <div class="plan-price">Free</div>
+        <ul class="plan-features">
+          <li>Browse all 16 curated ideas</li>
+          <li>Money Simulator (basic)</li>
+          <li>Works on any device</li>
+          <li class="locked">AI Idea Generator</li>
+          <li class="locked">Polish My Own Idea</li>
+          <li class="locked">Launch Planner</li>
+        </ul>
+        <a href="https://teen-lab.vercel.app" class="plan-btn outline">Try Now</a>
+      </article>
 
-    <article class="glass-card plan-card reveal">
-      <div class="plan-head"><div><div class="plan-name">Pro</div><div class="plan-sub">Everything unlocked</div></div><span class="badge" style="color:var(--purple);border-color:rgba(167,139,250,0.3)">Soon</span></div>
-      <div class="plan-price"><strong>$4.99</strong><span class="period">/mo</span></div>
-      <ul class="plan-features">
-        <li>Everything in Full App</li>
-        <li>Unlimited simulations</li>
-        <li>Polish My Own Idea (AI)</li>
-        <li>AI Launch Planner</li>
-        <li>AI Codegen Prompt</li>
-      </ul>
-      <a href="#" class="plan-btn">Notify Me</a>
-    </article>
-  </div>
-</section>
+      <article class="plan featured">
+        <div class="plan-header">
+          <div>
+            <div class="plan-name">Full <span class="italic">App</span></div>
+            <div class="plan-sub">Windows desktop, works offline</div>
+          </div>
+          <span class="stamp">Popular</span>
+        </div>
+        <div class="plan-price">Free</div>
+        <ul class="plan-features">
+          <li>Everything in Web Trial</li>
+          <li>AI Idea Generator</li>
+          <li>Money Simulator (3/day)</li>
+          <li>Works offline</li>
+          <li class="locked">Unlimited simulations</li>
+          <li class="locked">AI Launch Planner</li>
+        </ul>
+        <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="plan-btn">Download Free</a>
+      </article>
 
-<!-- HOW IT WORKS -->
-<section id="how">
-  <div class="section-label reveal">From zero to launched</div>
-  <h2 class="section-title reveal">How it <strong>actually works.</strong></h2>
-  <p class="section-desc reveal">Most teens never start because they don't know where to begin. Teen Lab gives you every next step.</p>
+      <article class="plan">
+        <div class="plan-header">
+          <div>
+            <div class="plan-name"><span class="italic">Pro</span></div>
+            <div class="plan-sub">Everything unlocked</div>
+          </div>
+          <span class="stamp pink">Coming soon</span>
+        </div>
+        <div class="plan-price">$4.99<span class="period">/mo</span></div>
+        <ul class="plan-features">
+          <li>Everything in Full App</li>
+          <li>Unlimited simulations</li>
+          <li>Polish My Own Idea (AI)</li>
+          <li>AI Launch Planner</li>
+          <li>AI Codegen Prompt</li>
+          <li>Priority new features</li>
+        </ul>
+        <a href="#" class="plan-btn outline">Notify Me</a>
+      </article>
+    </div>
+  </section>
 
-  <div class="steps-grid">
-    <article class="glass-card step-card reveal">
-      <div class="step-num">01</div>
-      <h4>Open in browser</h4>
-      <p>Hit Try Now. Browse curated ideas. Run the simulator. No account, no signup, no friction.</p>
-    </article>
-    <article class="glass-card step-card reveal">
-      <div class="step-num">02</div>
-      <h4>Download the app</h4>
-      <p>Install the desktop app for AI-generated ideas matched to you, plus the full experience offline.</p>
-    </article>
-    <article class="glass-card step-card reveal">
-      <div class="step-num">03</div>
-      <h4>Build &amp; ship</h4>
-      <p>Go Pro to unlock the Launch Planner and codegen prompts. Build the product. Get a first paying user.</p>
-    </article>
-  </div>
-</section>
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="section-header">
+      <h2>How it actually <span class="italic">works.</span></h2>
+      <div class="section-meta">
+        <div class="nbr">03.</div>
+        <div class="label">From zero to launched</div>
+        <p class="blurb">Most teens never start because they don't know where to begin. Teen Lab gives you every next step.</p>
+      </div>
+    </div>
 
-<!-- CTA -->
-<div class="cta-wrap">
-  <div class="glass-card cta-block reveal">
+    <div class="process-list">
+      <article class="process-step">
+        <div class="process-num">I.</div>
+        <h4>Open in <em>browser</em></h4>
+        <p>Hit Try Now. Browse curated ideas. Run the simulator with whatever numbers you want. No account, no signup, no friction.</p>
+      </article>
+      <article class="process-step">
+        <div class="process-num">II.</div>
+        <h4>Download the <em>full app</em></h4>
+        <p>Install the desktop app for AI-generated ideas matched to you, plus the complete Discover and Simulator experience offline.</p>
+      </article>
+      <article class="process-step">
+        <div class="process-num">III.</div>
+        <h4>Build &amp; <em>ship</em></h4>
+        <p>Go Pro to unlock the Launch Planner and codegen prompts. Paste into Cursor or ChatGPT. Build the product. Get a first paying user.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-card">
     <div>
-      <h2>Stop reading.<br><span class="grad">Start building.</span></h2>
+      <h2>Stop reading. <em>Start building.</em></h2>
       <p>The web trial is one click. No card, no email, no nonsense.</p>
     </div>
-    <div class="cta-btns">
-      <a href="https://teen-lab.vercel.app" class="btn btn-primary">
+    <div class="cta-actions">
+      <a href="https://teen-lab.vercel.app">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         Open in browser
       </a>
-      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="btn btn-glass">
+      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="outline">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download for Windows
       </a>
     </div>
   </div>
-</div>
 
-<footer>
+</main>
+
+<footer class="footer">
   <div>
-    <a href="#" class="footer-brand">Teen Lab</a>
+    <a href="#" class="footer-mark">Teen Lab</a>
     <div class="footer-tag">Built for ambitious teenagers.</div>
   </div>
   <div class="footer-meta">
-    &copy; 2026 · Beta v1.0.12 · Windows &amp; Web<br>
+    © 2026 · Beta v1.0.12 · Windows desktop &amp; web<br>
     <a href="https://github.com/ilanfuchs77-cyber/teen-lab">View on GitHub</a>
   </div>
 </footer>
-
-<script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
-</script>
-<script type="module">
-import * as THREE from 'three';
-(function(){
-  const hdr = document.getElementById('hdr');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // ── scroll nav ──
-  window.addEventListener('scroll', () => {
-    hdr.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.7);
-  }, {passive:true});
-
-  // ── scroll reveal ──
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
-  }), {threshold:0.12});
-  document.querySelectorAll('.reveal').forEach((el,i) => {
-    el.style.transitionDelay = (i % 4 * 0.06) + 's';
-    io.observe(el);
-  });
-
-  // ── Three.js hero orb ──
-  const canvas = document.getElementById('heroCanvas');
-  const W = () => canvas.offsetWidth, H = () => canvas.offsetHeight;
-
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setSize(W(), H());
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.2;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, W() / H(), 0.1, 100);
-  camera.position.z = 5;
-
-  const group = new THREE.Group();
-  group.scale.setScalar(0.6);   // smaller orb
-  scene.add(group);
-
-  // Core sphere — wireframe icosahedron
-  const coreGeo = new THREE.IcosahedronGeometry(1.05, 1);
-  const coreMat = new THREE.MeshStandardMaterial({
-    color: 0x0d1117, metalness: 0.9, roughness: 0.15,
-    emissive: 0x0d4f4a, emissiveIntensity: 0.6,
-  });
-  group.add(new THREE.Mesh(coreGeo, coreMat));
-
-  // Wireframe shell
-  const wireMat = new THREE.MeshBasicMaterial({ color: 0x2dd4bf, wireframe: true, transparent: true, opacity: 0.18 });
-  group.add(new THREE.Mesh(new THREE.IcosahedronGeometry(1.08, 2), wireMat));
-
-  // Outer glow sphere
-  const glowGeo = new THREE.SphereGeometry(1.22, 32, 32);
-  const glowMat = new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.04, side: THREE.BackSide });
-  group.add(new THREE.Mesh(glowGeo, glowMat));
-
-  // Ring 1 — teal
-  const r1 = new THREE.Mesh(
-    new THREE.TorusGeometry(1.72, 0.022, 8, 100),
-    new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.75 })
-  );
-  r1.rotation.x = Math.PI / 2.8;
-  group.add(r1);
-
-  // Ring 2 — purple
-  const r2 = new THREE.Mesh(
-    new THREE.TorusGeometry(2.1, 0.014, 8, 100),
-    new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.55 })
-  );
-  r2.rotation.x = -Math.PI / 4;
-  r2.rotation.y = Math.PI / 5;
-  group.add(r2);
-
-  // Ring 3 — thin white
-  const r3 = new THREE.Mesh(
-    new THREE.TorusGeometry(1.45, 0.008, 8, 100),
-    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 })
-  );
-  r3.rotation.x = Math.PI / 1.6;
-  r3.rotation.z = Math.PI / 6;
-  group.add(r3);
-
-  // Particles — spherical cloud
-  const N = 300;
-  const pos = new Float32Array(N * 3);
-  for (let i = 0; i < N; i++) {
-    const theta = Math.random() * Math.PI * 2;
-    const phi   = Math.acos(2 * Math.random() - 1);
-    const r     = 1.9 + Math.random() * 1.1;
-    pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
-    pos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
-    pos[i*3+2] = r * Math.cos(phi);
-  }
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const particles = new THREE.Points(pGeo,
-    new THREE.PointsMaterial({ color: 0x2dd4bf, size: 0.028, transparent: true, opacity: 0.55 })
-  );
-  group.add(particles);
-
-  // Lights
-  scene.add(new THREE.AmbientLight(0x111111, 1));
-  const l1 = new THREE.PointLight(0x2dd4bf, 4, 12); l1.position.set(3, 3, 4); scene.add(l1);
-  const l2 = new THREE.PointLight(0xa78bfa, 3, 12); l2.position.set(-4, -2, 3); scene.add(l2);
-  const l3 = new THREE.PointLight(0xffffff,  1, 8);  l3.position.set(0, 4, 2);  scene.add(l3);
-
-  let t = 0;
-  (function animate(){
-    requestAnimationFrame(animate);
-    t += 0.012;
-
-    // gentle idle auto-rotation (not controllable by the cursor)
-    group.rotation.y += 0.0025;
-
-    // cinematic float
-    group.position.y = Math.sin(t * 0.7) * 0.18;
-
-    // rings spin
-    r1.rotation.z += 0.004;
-    r2.rotation.z -= 0.003;
-    r3.rotation.y += 0.002;
-    particles.rotation.y += 0.0008;
-
-    // light pulse
-    l1.intensity = 4 + Math.sin(t * 1.3) * 0.8;
-
-    renderer.render(scene, camera);
-  })();
-
-  // Resize
-  window.addEventListener('resize', () => {
-    renderer.setSize(W(), H());
-    camera.aspect = W() / H();
-    camera.updateProjectionMatrix();
-  });
-})();
-</script>
 
 </body>
 </html>
