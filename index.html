@@ -19,6 +19,8 @@
     --accent-soft:#7af0e0;
     --accent-deep:#0f766e;
     --purple:#a78bfa;
+    --yellow:#f5c542;
+    --yellow-soft:#ffe27a;
 
     --glass:rgba(255,255,255,0.045);
     --glass-strong:rgba(255,255,255,0.07);
@@ -54,12 +56,12 @@
 
   .hero-glow{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(60% 60% at 65% 50%,rgba(45,212,191,0.08),transparent 70%),radial-gradient(40% 40% at 80% 30%,rgba(167,139,250,0.06),transparent 60%)}
 
-  .eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);padding:0.45rem 1rem;border-radius:999px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.22);width:fit-content}
-  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--yellow);padding:0.45rem 1rem;border-radius:999px;background:rgba(245,197,66,0.10);border:1px solid rgba(245,197,66,0.28);width:fit-content}
+  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--yellow);box-shadow:0 0 8px var(--yellow)}
 
   .hero-title{font-size:clamp(2.8rem,4.5vw,4.2rem);font-weight:200;line-height:1;letter-spacing:-0.04em;color:#fff}
   .hero-title strong{font-weight:800;display:block}
-  .hero-title .grad{background:linear-gradient(120deg,var(--accent-soft),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero-title .grad{background:linear-gradient(120deg,var(--yellow-soft),var(--yellow));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
   .hero-sub{font-size:1rem;color:var(--text-dim);max-width:420px;font-weight:400;line-height:1.65}
 
@@ -402,6 +404,7 @@ import * as THREE from 'three';
   camera.position.z = 5;
 
   const group = new THREE.Group();
+  group.scale.setScalar(0.6);   // smaller orb
   scene.add(group);
 
   // Core sphere — wireframe icosahedron
@@ -471,24 +474,13 @@ import * as THREE from 'three';
   const l2 = new THREE.PointLight(0xa78bfa, 3, 12); l2.position.set(-4, -2, 3); scene.add(l2);
   const l3 = new THREE.PointLight(0xffffff,  1, 8);  l3.position.set(0, 4, 2);  scene.add(l3);
 
-  // Mouse lerp
-  const mouse = {x:0, y:0};
-  const lerpd = {x:0, y:0};
-  window.addEventListener('mousemove', e => {
-    mouse.x =  (e.clientX / innerWidth  * 2 - 1) * 0.55;
-    mouse.y = -(e.clientY / innerHeight * 2 - 1) * 0.45;
-  });
-
   let t = 0;
   (function animate(){
     requestAnimationFrame(animate);
     t += 0.012;
 
-    // lerp rotation toward cursor
-    lerpd.x += (mouse.x - lerpd.x) * 0.04;
-    lerpd.y += (mouse.y - lerpd.y) * 0.04;
-    group.rotation.y = lerpd.x;
-    group.rotation.x = -lerpd.y;
+    // gentle idle auto-rotation (not controllable by the cursor)
+    group.rotation.y += 0.0025;
 
     // cinematic float
     group.position.y = Math.sin(t * 0.7) * 0.18;
