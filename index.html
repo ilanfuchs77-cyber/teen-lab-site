@@ -401,10 +401,14 @@
 </footer>
 
 <script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
 </script>
 <script type="module">
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const canvas = document.getElementById('scene');
@@ -415,6 +419,8 @@ const ticker = document.getElementById('ticker');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
 
 const scene = new THREE.Scene();
 const FOG_BASE = 0.0016;
@@ -459,7 +465,7 @@ function makeSky(nightMix){
 scene.background = makeSky(0);
 
 /* ---------- sun (off-center, low, partly behind a crest) ---------- */
-const SUN = new THREE.Vector3(150, 46, -560);
+const SUN = new THREE.Vector3(130, 180, -380);
 function glowTex(stops){
   return canvasTex(128, 128, (ctx) => {
     const g = ctx.createRadialGradient(64,64,0,64,64,64);
@@ -470,7 +476,7 @@ function glowTex(stops){
 const sunGroup = new THREE.Group();
 sunGroup.position.copy(SUN);
 function sunSprite(tex, scale, opacity){
-  const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, blending: THREE.AdditiveBlending, depthWrite:false, depthTest:false, transparent:true, opacity, fog:false }));
+  const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, blending: THREE.AdditiveBlending, depthWrite:false, depthTest:true, transparent:true, opacity, fog:false }));
   m.scale.set(scale, scale, 1); m.renderOrder = 5; return m;
 }
 const haloTex = glowTex([[0,'rgba(242,193,78,0.9)'],[0.25,'rgba(242,193,78,0.5)'],[0.6,'rgba(201,112,63,0.18)'],[1,'rgba(201,112,63,0)']]);
@@ -494,61 +500,51 @@ for (let i = 0; i < 3; i++){
   scene.add(ray);
 }
 
-/* ---------- ridges (paper-cut silhouettes) ---------- */
-const RIDGE_Z = [-40, -90, -150, -230, -330, -460, -620];
-const nearCol = new THREE.Color('#0b0e1a');
-const farCol  = new THREE.Color('#4a3a52');
-const ridges = [];
-const crests = [];
+/* ---------- lighting (dusk: warm key from the sun, cool fill) ---------- */
+scene.add(new THREE.HemisphereLight(0x6a5a86, 0x140f1a, 0.85));
+const keyLight = new THREE.DirectionalLight(0xffcf86, 2.7);   // warm sun-side light
+keyLight.position.set(SUN.x, SUN.y + 70, SUN.z + 160);
+keyLight.target.position.set(0, 0, -150);
+scene.add(keyLight, keyLight.target);
+const fillLight = new THREE.DirectionalLight(0x8a7bb0, 0.5);  // cool sky fill from the left
+fillLight.position.set(-220, 130, 220);
+scene.add(fillLight);
+scene.add(new THREE.AmbientLight(0x241f33, 0.4));
 
-// per-layer crest base height (world y) + amplitude — a staircase rising to the
-// horizon: nearest ridge sits low (fills the bottom), each farther ridge a touch
-// higher so its crest peeks above the one in front, the farthest just under the sun.
-const BASE_H = [-46, -26, -8, 8, 22, 34, 46];
-const AMP    = [ 64,  56,  48, 40, 32, 25, 18];
-RIDGE_Z.forEach((z, i) => {
-  const t = i / (RIDGE_Z.length - 1);
-  const width = Math.max(1500, Math.abs(z) * 7);
-  const segs = 200;
-  const geo = new THREE.PlaneGeometry(width, 1200, segs, 1);
-  const pos = geo.attributes.position;
-  const seed = i * 7.13 + 1.7;
-  const amp = AMP[i];       // near jagged, far gentle
-  const baseH = BASE_H[i];  // staircase toward the horizon
-  const crestPts = [];
-  for (let v = 0; v < pos.count; v++){
-    const x = pos.getX(v);
-    if (pos.getY(v) > 0){
-      const h = baseH + amp * (0.62*Math.sin(x*0.0042 + seed)
-                             + 0.30*Math.sin(x*0.0115 + seed*1.7)
-                             + 0.16*Math.sin(x*0.027  + seed*2.4));
-      pos.setY(v, h);
-      crestPts.push(new THREE.Vector3(x, h, 0));
-    } else {
-      pos.setY(v, -900);  // drop bottom far below frame -> solid cut-out
+/* ---------- the mountain (loaded GLB, textured) ---------- */
+const M_ROT_X = 0;              // model is already Y-up (terrain in the X-Z plane)
+const M_FOOTPRINT = 620;        // scale the model's horizontal extent to this width
+const M_VSCALE = 1.45;          // vertical exaggeration -> a more dramatic peak
+const M_POS = new THREE.Vector3(0, -46, -330);  // pushed back so the camera views it from outside
+let mountain = null, modelLoaded = false;
+new GLTFLoader().load('assets/great_mountain.glb', (gltf) => {
+  const obj = gltf.scene;
+  obj.traverse(n => {
+    if (n.isMesh){
+      const m = n.material;
+      m.metalness = 0; m.roughness = 1; m.fog = true;
+      if (m.map) m.map.colorSpace = THREE.SRGBColorSpace;
+      m.needsUpdate = true;
     }
-  }
-  geo.attributes.position.needsUpdate = true;
-  const col = nearCol.clone().lerp(farCol, t);
-  const mat = new THREE.MeshBasicMaterial({ color: col, fog: true, transparent: true, opacity: 1 });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(0, 0, z);
-  mesh.renderOrder = i;       // far first
-  scene.add(mesh);
-  ridges.push({ mesh, z, t, baseY: 0 });
-
-  // gold crest rim-light on the nearest 3 ridges
-  if (i <= 2){
-    crestPts.sort((a, b) => a.x - b.x);
-    const cg = new THREE.BufferGeometry().setFromPoints(crestPts);
-    const cm = new THREE.LineBasicMaterial({ color: 0xf2c14e, transparent:true, opacity: 0.0, blending: THREE.AdditiveBlending, depthWrite:false, fog:true });
-    const line = new THREE.Line(cg, cm);
-    line.position.set(0, 0.6, z);
-    line.renderOrder = i + 0.5;
-    scene.add(line);
-    crests.push({ line, baseOpacity: THREE.MathUtils.lerp(0.85, 0.28, i/2), i });
-  }
-});
+  });
+  obj.rotation.x = M_ROT_X;
+  obj.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(obj);
+  const size = new THREE.Vector3(); box.getSize(size);
+  const center = new THREE.Vector3(); box.getCenter(center);
+  obj.position.x -= center.x;
+  obj.position.z -= center.z;
+  obj.position.y -= box.min.y;                 // seat the base at y = 0
+  const horiz = Math.max(size.x, size.z) || 1;
+  const s = M_FOOTPRINT / horiz;
+  const pivot = new THREE.Group();
+  pivot.add(obj);
+  pivot.scale.set(s, s * M_VSCALE, s);
+  pivot.position.copy(M_POS);
+  scene.add(pivot);
+  mountain = pivot; modelLoaded = true;
+  window.__mtnInfo = { size: size.toArray().map(v => +v.toFixed(1)), scale: +s.toFixed(3), heightWorld: +(size.y * s).toFixed(1) };
+}, undefined, (err) => console.error('mountain load failed', err));
 
 /* ---------- drifting cloud bands ---------- */
 const cloudTex = canvasTex(256, 64, (ctx, w, h) => {
@@ -607,9 +603,7 @@ function startIntro(){
   });
 }
 function finalState(){
-  ridges.forEach(r => { r.mesh.material.opacity = 1; r.mesh.position.y = 0; });
   sunGroup.scale.setScalar(1);
-  crests.forEach(c => c.line.material.opacity = c.baseOpacity);
 }
 if (reduce){
   finalState();
@@ -640,24 +634,13 @@ function frame(){
   const dt = Math.min(clock.getDelta(), 0.05);  // clamp so a tab-pause / off-screen gap can't teleport drift
   elapsed += dt;
 
-  // intro
+  // intro — the sun blooms in
   if (!reduce && !introDone){
     if (introStart === null) introStart = elapsed;
     const tIn = elapsed - introStart;
     const ease = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
-    // ridges back-to-front
-    let allDone = true;
-    ridges.forEach((r, i) => {
-      const delay = (RIDGE_Z.length - 1 - i) * 0.13;
-      const p = ease((tIn - delay) / 0.6);
-      r.mesh.material.opacity = p;
-      r.mesh.position.y = (1 - p) * 70;
-      if (p < 1) allDone = false;
-    });
-    const sp = ease((tIn - 0.9) / 0.8);
-    sunGroup.scale.setScalar(0.25 + sp * 0.75);
-    crests.forEach(c => c.line.material.opacity = c.baseOpacity * ease((tIn - 1.1) / 0.7));
-    if (tIn > 2.2 && allDone) { introDone = true; finalState(); }
+    sunGroup.scale.setScalar(0.4 + ease(tIn / 1.0) * 0.6);
+    if (tIn > 1.05){ introDone = true; finalState(); }
   }
 
   // mouse parallax (lerped, capped)
@@ -681,11 +664,7 @@ function frame(){
     c.m.position.x += c.sp * dt * 60;
     if (c.m.position.x > 700) c.m.position.x = -700;
   });
-  if (introDone){
-    crests.forEach((c, k) => {
-      c.line.material.opacity = c.baseOpacity * (0.82 + 0.18 * Math.sin(elapsed * 1.4 + k));
-    });
-  }
+  if (mountain){ mountain.rotation.y = Math.sin(elapsed * 0.05) * 0.012; }  // barely-there idle drift
 
   renderer.render(scene, camera);
 }
