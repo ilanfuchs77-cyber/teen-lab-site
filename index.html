@@ -8,12 +8,10 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232dd4bf'/%3E%3Ctext x='50' y='71' font-size='62' text-anchor='middle' fill='%23071018' font-weight='900'%3ET%3C/text%3E%3C/svg%3E">
   <link rel="preload" as="image" href="assets/peak.jpg">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap');
-
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
   :root{
-    --bg:#05070d;
+    --bg:#000000;
     --text:#f4f7fb;
     --text-dim:rgba(228,236,245,0.62);
     --text-muted:rgba(228,236,245,0.34);
@@ -26,69 +24,62 @@
     --glass-strong:rgba(255,255,255,0.07);
     --glass-border:rgba(255,255,255,0.10);
     --glass-border-bright:rgba(255,255,255,0.18);
-    --glass-shadow:0 8px 40px rgba(0,0,0,0.45);
+    --glass-shadow:0 8px 40px rgba(0,0,0,0.65);
     --blur:saturate(160%) blur(22px);
-
-    --ink:#27313e;
-    --ink-dim:rgba(39,49,62,0.68);
-    --ink-faint:rgba(39,49,62,0.4);
   }
 
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
-  .atmosphere{position:fixed;inset:0;z-index:-2;background:radial-gradient(120% 80% at 50% 120%, rgba(45,212,191,0.10), transparent 55%),radial-gradient(90% 70% at 82% 110%, rgba(167,139,250,0.12), transparent 60%),linear-gradient(180deg,#070b16 0%,#05070d 60%,#04060b 100%)}
-  .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .atmosphere{position:fixed;inset:0;z-index:-2;background:radial-gradient(60% 60% at 70% 50%, rgba(45,212,191,0.07), transparent 70%),radial-gradient(50% 50% at 20% 80%, rgba(167,139,250,0.07), transparent 60%)}
+  .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
   /* ───── NAV ───── */
-  header{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;width:min(1180px,calc(100% - 32px));padding:0.7rem 0.7rem 0.7rem 1.4rem;display:flex;align-items:center;justify-content:space-between;background:rgba(20,26,38,0.30);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,0.18);border-radius:999px;box-shadow:0 8px 30px rgba(10,15,25,0.20);transition:background .4s,border-color .4s}
-  header.scrolled{background:var(--glass);border-color:var(--glass-border)}
-  header::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.20),transparent 45%);-webkit-mask:linear-gradient(#000,transparent 60%);mask:linear-gradient(#000,transparent 60%)}
-  .logo{font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none;letter-spacing:0.02em;display:flex;align-items:center;gap:0.5rem;text-shadow:0 1px 12px rgba(0,0,0,0.3)}
+  header{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;width:min(1180px,calc(100% - 32px));padding:0.7rem 0.7rem 0.7rem 1.4rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.60);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,0.10);border-radius:999px;box-shadow:0 8px 30px rgba(0,0,0,0.40);transition:background .4s,border-color .4s}
+  header.scrolled{background:rgba(10,10,10,0.80);border-color:rgba(255,255,255,0.08)}
+  header::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.07),transparent 45%);-webkit-mask:linear-gradient(#000,transparent 60%);mask:linear-gradient(#000,transparent 60%)}
+  .logo{font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none;letter-spacing:0.02em;display:flex;align-items:center;gap:0.5rem}
   .logo-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
   nav{display:flex;gap:0.4rem;align-items:center}
-  nav a:not(.nav-cta){color:rgba(255,255,255,0.82);text-decoration:none;font-size:0.84rem;font-weight:500;padding:0.5rem 0.9rem;border-radius:999px;transition:color .2s,background .2s;text-shadow:0 1px 10px rgba(0,0,0,0.3)}
-  nav a:not(.nav-cta):hover{color:#fff;background:rgba(255,255,255,0.12)}
-  .nav-cta{background:#fff;color:#06121a;padding:0.55rem 1.3rem;border-radius:999px;text-decoration:none;font-weight:700;font-size:0.82rem;letter-spacing:0.01em;transition:transform .15s,box-shadow .15s}
+  nav a:not(.nav-cta){color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.84rem;font-weight:500;padding:0.5rem 0.9rem;border-radius:999px;transition:color .2s,background .2s}
+  nav a:not(.nav-cta):hover{color:#fff;background:rgba(255,255,255,0.08)}
+  .nav-cta{background:#fff;color:#000;padding:0.55rem 1.3rem;border-radius:999px;text-decoration:none;font-weight:700;font-size:0.82rem;letter-spacing:0.01em;transition:transform .15s,box-shadow .15s}
   .nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(122,240,224,0.35)}
 
-  /* ───── HERO — real misty peak ───── */
-  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 5rem;overflow:hidden;background:linear-gradient(180deg,#cdd9e6 0%,#bcccdd 45%,#9aa6b4 78%,#1a2230 100%)}
-  .hero-bg{position:absolute;inset:-9% -7%;z-index:1;background:url('assets/peak.jpg') center 40% / cover no-repeat;will-change:transform;transform:scale(1.04)}
-  .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(231,237,243,0) 50%,rgba(214,223,233,0.4) 80%,rgba(154,166,180,0.55) 100%)}
+  /* ───── HERO — dark split ───── */
+  .hero{position:relative;min-height:100vh;display:grid;grid-template-columns:40fr 60fr;align-items:center;overflow:hidden;background:#000}
+  .hero-left{padding:8rem 2.5rem 8rem 5rem;display:flex;flex-direction:column;gap:1.8rem;z-index:2}
+  .hero-right{position:relative;height:100vh}
+  #heroCanvas{position:absolute;inset:0;width:100%;height:100%}
 
-  .streaks{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;mix-blend-mode:screen;opacity:0.4}
-  .streaks::before,.streaks::after{content:'';position:absolute;left:-10%;right:-10%;top:-60%;height:160%;background-image:repeating-linear-gradient(90deg,transparent 0 40px,rgba(255,255,255,0.5) 40px 41px,transparent 41px 95px);-webkit-mask:linear-gradient(180deg,#000 0%,#000 28%,transparent 60%);mask:linear-gradient(180deg,#000 0%,#000 28%,transparent 60%);animation:streakFall 8s linear infinite}
-  .streaks::after{background-image:repeating-linear-gradient(90deg,transparent 0 75px,rgba(180,225,255,0.38) 75px 76px,transparent 76px 160px);animation-duration:12s;opacity:0.7}
-  @keyframes streakFall{from{transform:translateY(-12%)}to{transform:translateY(12%)}}
+  .hero-glow{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(60% 60% at 65% 50%,rgba(45,212,191,0.08),transparent 70%),radial-gradient(40% 40% at 80% 30%,rgba(167,139,250,0.06),transparent 60%)}
 
-  .hero-fade{position:absolute;left:0;right:0;bottom:0;height:32vh;z-index:3;pointer-events:none;background:linear-gradient(180deg,transparent,var(--bg) 95%)}
+  .eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);padding:0.45rem 1rem;border-radius:999px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.22);width:fit-content}
+  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
 
-  .hero-inner{position:relative;z-index:4;display:flex;flex-direction:column;align-items:center;gap:1.7rem;max-width:1000px;width:100%}
-  .hero-inner::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:130%;height:158%;z-index:-1;pointer-events:none;background:radial-gradient(56% 50% at 50% 50%,rgba(236,242,247,0.66),rgba(236,242,247,0.2) 56%,transparent 75%)}
+  .hero-title{font-size:clamp(2.8rem,4.5vw,4.2rem);font-weight:200;line-height:1;letter-spacing:-0.04em;color:#fff}
+  .hero-title strong{font-weight:800;display:block}
+  .hero-title .grad{background:linear-gradient(120deg,var(--accent-soft),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
-  .eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.7rem;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent-deep);padding:0.5rem 1.15rem;border-radius:999px;background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.85);backdrop-filter:saturate(140%) blur(8px);-webkit-backdrop-filter:saturate(140%) blur(8px);box-shadow:0 4px 18px rgba(60,75,95,0.12)}
-  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .hero-sub{font-size:1rem;color:var(--text-dim);max-width:420px;font-weight:400;line-height:1.65}
 
-  .spread{display:flex;align-items:center;justify-content:center;gap:clamp(0.7rem,3vw,2.6rem);flex-wrap:nowrap;width:100%;color:var(--ink);font-weight:200;line-height:1;letter-spacing:clamp(0.04em,0.5vw,0.16em);font-size:clamp(1.5rem,6.4vw,4.6rem);text-transform:uppercase;text-shadow:0 2px 36px rgba(255,255,255,0.75)}
-  .spread .w{padding-left:0.16em}
-  .spread .sep{color:var(--accent);font-size:0.34em;font-weight:400}
-
-  .hero-sub{font-size:clamp(1rem,1.6vw,1.18rem);color:var(--ink-dim);max-width:540px;font-weight:400;line-height:1.62}
-
-  .hero-ctas{display:flex;gap:0.9rem;flex-wrap:wrap;justify-content:center;margin-top:0.3rem}
+  .hero-ctas{display:flex;gap:0.9rem;flex-wrap:wrap;margin-top:0.4rem}
   .btn{display:inline-flex;align-items:center;gap:0.55rem;padding:0.92rem 1.7rem;border-radius:999px;text-decoration:none;font-weight:600;font-size:0.9rem;letter-spacing:0.01em;transition:transform .18s,box-shadow .18s,background .2s,border-color .2s}
   .btn svg{width:15px;height:15px}
-  .hero .btn-primary{background:#1c2531;color:#fff;border:1px solid transparent;box-shadow:0 10px 30px rgba(28,37,49,0.28)}
-  .hero .btn-primary:hover{transform:translateY(-2px);background:#11181f;box-shadow:0 14px 40px rgba(28,37,49,0.36)}
-  .hero .btn-glass{background:rgba(255,255,255,0.66);color:var(--ink);border:1px solid rgba(255,255,255,0.92);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px)}
-  .hero .btn-glass:hover{transform:translateY(-2px);background:rgba(255,255,255,0.88)}
+  .hero .btn-primary{background:#fff;color:#000;border:1px solid transparent}
+  .hero .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(122,240,224,0.25)}
+  .hero .btn-glass{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.14)}
+  .hero .btn-glass:hover{transform:translateY(-2px);background:rgba(255,255,255,0.10)}
 
-  .scroll-ind{position:absolute;left:50%;bottom:3.2rem;transform:translateX(-50%);z-index:4;width:46px;height:46px}
-  .scroll-ind .ring{position:absolute;inset:0;border:1px solid rgba(255,255,255,0.6);border-radius:50%;box-shadow:0 2px 14px rgba(0,0,0,0.15)}
+  .hero-stats{display:flex;gap:2.5rem;margin-top:0.5rem}
+  .hero-stat .num{font-size:1.6rem;font-weight:700;letter-spacing:-0.03em;color:#fff}
+  .hero-stat .lbl{font-size:0.72rem;color:var(--text-muted);font-weight:400;letter-spacing:0.05em;text-transform:uppercase;margin-top:0.1rem}
+
+  .scroll-ind{position:absolute;left:20%;bottom:2.8rem;transform:translateX(-50%);z-index:4;width:46px;height:46px}
+  .scroll-ind .ring{position:absolute;inset:0;border:1px solid rgba(255,255,255,0.3);border-radius:50%}
   .scroll-ind .orbit{position:absolute;inset:0;animation:spin 5s linear infinite}
   .scroll-ind .orbit::before{content:'';position:absolute;top:-3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
-  .scroll-ind .chev{position:absolute;left:50%;top:50%;width:9px;height:9px;border-right:1.5px solid rgba(255,255,255,0.85);border-bottom:1.5px solid rgba(255,255,255,0.85);transform:translate(-50%,-65%) rotate(45deg);animation:bob 1.8s ease-in-out infinite}
+  .scroll-ind .chev{position:absolute;left:50%;top:50%;width:9px;height:9px;border-right:1.5px solid rgba(255,255,255,0.6);border-bottom:1.5px solid rgba(255,255,255,0.6);transform:translate(-50%,-65%) rotate(45deg);animation:bob 1.8s ease-in-out infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes bob{0%,100%{transform:translate(-50%,-75%) rotate(45deg)}50%{transform:translate(-50%,-45%) rotate(45deg)}}
 
@@ -162,6 +153,12 @@
   .reveal.in{opacity:1;transform:none}
 
   @media(max-width:900px){
+    .hero{grid-template-columns:1fr;min-height:100svh}
+    .hero-left{padding:7rem 1.6rem 2rem;align-items:center;text-align:center}
+    .hero-sub{max-width:100%}
+    .hero-right{height:55vw;min-height:280px}
+    .hero-stats{justify-content:center}
+    .scroll-ind{left:50%}
     section{padding:5rem 1.4rem}
     .features-grid,.plans-grid,.steps-grid{grid-template-columns:1fr}
     .cta-block{grid-template-columns:1fr;padding:2.6rem 1.8rem}
@@ -189,16 +186,15 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg" id="heroBg"></div>
-  <div class="streaks"></div>
-  <div class="hero-fade"></div>
+  <div class="hero-glow"></div>
 
-  <div class="hero-inner">
+  <!-- LEFT: text -->
+  <div class="hero-left">
     <div class="eyebrow"><span class="dot"></span>For ambitious teenagers</div>
 
-    <div class="spread">
-      <span class="w">Discover</span><span class="sep">●</span><span class="w">Build</span><span class="sep">●</span><span class="w">Earn</span>
-    </div>
+    <h1 class="hero-title">
+      <strong><span class="grad">Discover.</span><br>Build. Earn.</strong>
+    </h1>
 
     <p class="hero-sub">The toolkit to discover, simulate, and ship your first real digital product — the kind people actually pay for.</p>
 
@@ -212,6 +208,17 @@
         Desktop app
       </a>
     </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">16+</div><div class="lbl">Product ideas</div></div>
+      <div class="hero-stat"><div class="num">Free</div><div class="lbl">To start</div></div>
+      <div class="hero-stat"><div class="num">AI</div><div class="lbl">Powered</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: 3D canvas -->
+  <div class="hero-right">
+    <canvas id="heroCanvas"></canvas>
   </div>
 
   <a href="#features" class="scroll-ind" aria-label="Scroll down">
@@ -357,39 +364,16 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js"></script>
 <script>
 (function(){
-  const bg = document.getElementById('heroBg');
   const hdr = document.getElementById('hdr');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── parallax: cursor + scroll, lerped ──
-  const tgt = {x:0, y:0};
-  const cur = {x:0, y:0};
-  let scrollY = 0;
-
-  window.addEventListener('mousemove', e => {
-    tgt.x = (e.clientX / window.innerWidth  * 2 - 1);
-    tgt.y = (e.clientY / window.innerHeight * 2 - 1);
-  });
+  // ── scroll nav ──
   window.addEventListener('scroll', () => {
-    scrollY = window.scrollY;
-    hdr.classList.toggle('scrolled', scrollY > window.innerHeight * 0.7);
+    hdr.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.7);
   }, {passive:true});
-
-  function frame(){
-    if(!reduce){
-      cur.x += (tgt.x - cur.x) * 0.06;
-      cur.y += (tgt.y - cur.y) * 0.06;
-      // mouse pushes the peak gently the opposite way; scroll drifts it down slower than the page
-      const mx = -cur.x * 22;
-      const my = -cur.y * 16 + scrollY * 0.28;
-      const sc = 1.06 + Math.abs(cur.x) * 0.02;
-      bg.style.transform = `translate(${mx}px, ${my}px) scale(${sc})`;
-    }
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
 
   // ── scroll reveal ──
   const io = new IntersectionObserver(es => es.forEach(e => {
@@ -398,6 +382,131 @@
   document.querySelectorAll('.reveal').forEach((el,i) => {
     el.style.transitionDelay = (i % 4 * 0.06) + 's';
     io.observe(el);
+  });
+
+  // ── Three.js hero orb ──
+  const canvas = document.getElementById('heroCanvas');
+  const W = () => canvas.offsetWidth, H = () => canvas.offsetHeight;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(W(), H());
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, W() / H(), 0.1, 100);
+  camera.position.z = 5;
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // Core sphere — wireframe icosahedron
+  const coreGeo = new THREE.IcosahedronGeometry(1.05, 1);
+  const coreMat = new THREE.MeshStandardMaterial({
+    color: 0x0d1117, metalness: 0.9, roughness: 0.15,
+    emissive: 0x0d4f4a, emissiveIntensity: 0.6,
+  });
+  group.add(new THREE.Mesh(coreGeo, coreMat));
+
+  // Wireframe shell
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0x2dd4bf, wireframe: true, transparent: true, opacity: 0.18 });
+  group.add(new THREE.Mesh(new THREE.IcosahedronGeometry(1.08, 2), wireMat));
+
+  // Outer glow sphere
+  const glowGeo = new THREE.SphereGeometry(1.22, 32, 32);
+  const glowMat = new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.04, side: THREE.BackSide });
+  group.add(new THREE.Mesh(glowGeo, glowMat));
+
+  // Ring 1 — teal
+  const r1 = new THREE.Mesh(
+    new THREE.TorusGeometry(1.72, 0.022, 8, 100),
+    new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.75 })
+  );
+  r1.rotation.x = Math.PI / 2.8;
+  group.add(r1);
+
+  // Ring 2 — purple
+  const r2 = new THREE.Mesh(
+    new THREE.TorusGeometry(2.1, 0.014, 8, 100),
+    new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.55 })
+  );
+  r2.rotation.x = -Math.PI / 4;
+  r2.rotation.y = Math.PI / 5;
+  group.add(r2);
+
+  // Ring 3 — thin white
+  const r3 = new THREE.Mesh(
+    new THREE.TorusGeometry(1.45, 0.008, 8, 100),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 })
+  );
+  r3.rotation.x = Math.PI / 1.6;
+  r3.rotation.z = Math.PI / 6;
+  group.add(r3);
+
+  // Particles — spherical cloud
+  const N = 300;
+  const pos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi   = Math.acos(2 * Math.random() - 1);
+    const r     = 1.9 + Math.random() * 1.1;
+    pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+    pos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    pos[i*3+2] = r * Math.cos(phi);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const particles = new THREE.Points(pGeo,
+    new THREE.PointsMaterial({ color: 0x2dd4bf, size: 0.028, transparent: true, opacity: 0.55 })
+  );
+  group.add(particles);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x111111, 1));
+  const l1 = new THREE.PointLight(0x2dd4bf, 4, 12); l1.position.set(3, 3, 4); scene.add(l1);
+  const l2 = new THREE.PointLight(0xa78bfa, 3, 12); l2.position.set(-4, -2, 3); scene.add(l2);
+  const l3 = new THREE.PointLight(0xffffff,  1, 8);  l3.position.set(0, 4, 2);  scene.add(l3);
+
+  // Mouse lerp
+  const mouse = {x:0, y:0};
+  const lerpd = {x:0, y:0};
+  window.addEventListener('mousemove', e => {
+    mouse.x =  (e.clientX / innerWidth  * 2 - 1) * 0.55;
+    mouse.y = -(e.clientY / innerHeight * 2 - 1) * 0.45;
+  });
+
+  let t = 0;
+  (function animate(){
+    requestAnimationFrame(animate);
+    t += 0.012;
+
+    // lerp rotation toward cursor
+    lerpd.x += (mouse.x - lerpd.x) * 0.04;
+    lerpd.y += (mouse.y - lerpd.y) * 0.04;
+    group.rotation.y = lerpd.x;
+    group.rotation.x = -lerpd.y;
+
+    // cinematic float
+    group.position.y = Math.sin(t * 0.7) * 0.18;
+
+    // rings spin
+    r1.rotation.z += 0.004;
+    r2.rotation.z -= 0.003;
+    r3.rotation.y += 0.002;
+    particles.rotation.y += 0.0008;
+
+    // light pulse
+    l1.intensity = 4 + Math.sin(t * 1.3) * 0.8;
+
+    renderer.render(scene, camera);
+  })();
+
+  // Resize
+  window.addEventListener('resize', () => {
+    renderer.setSize(W(), H());
+    camera.aspect = W() / H();
+    camera.updateProjectionMatrix();
   });
 })();
 </script>
