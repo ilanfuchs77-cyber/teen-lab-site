@@ -3,868 +3,711 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teen Lab — Build your first digital product</title>
-  <meta name="description" content="A toolkit for teenagers to discover, plan, and ship products people pay for.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23FFE34F'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' font-family='Georgia' font-weight='900' fill='%231A1814'%3ET%3C/text%3E%3C/svg%3E">
+  <title>Teen Lab — Build something people pay for</title>
+  <meta name="description" content="Teen Lab is the toolkit for teenagers to discover product ideas, simulate the earnings, and plan the launch — before you even finish high school.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e1a'/%3E%3Ccircle cx='68' cy='40' r='15' fill='%23f2c14e'/%3E%3Cpath d='M0 78 L30 50 L48 66 L70 42 L100 72 L100 100 L0 100 Z' fill='%231a1530'/%3E%3Cpath d='M0 86 L26 64 L50 80 L74 60 L100 84 L100 100 L0 100 Z' fill='%230b0e1a'/%3E%3C/svg%3E">
 <style>
-  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-  :root {
-    --paper:    #F4ECD8;
-    --paper-2:  #EEE3C7;
-    --ink:      #1A1814;
-    --ink-soft: #3D3631;
-    --pencil:   #7A7165;
-    --rule:     #C8BCA2;
-    --highlight:#FFE34F;
-    --pink:     #FF7AAB;
-    --kraft:    #8B6F47;
-    --moss:     #5B7A3A;
-    --tape:     rgba(255,227,79,0.55);
+  :root{
+    --ink:#0b0e1a;            /* near-black indigo — page base / nearest ridge */
+    --zenith:#1a1530;         /* deepest sky indigo */
+    --violet:#3b2a4a;         /* mid sky / far ridge tint */
+    --coral:#c9703f;          /* muted horizon coral */
+    --gold:#f2c14e;           /* molten-gold sun glow = the accent */
+    --gold-soft:#ffd873;
+    --suncore:#fff3d0;        /* sun core / brightest highlight */
+    --head:#ece4d6;           /* warm off-white headlines */
+    --body:#cfc7bd;           /* desaturated off-white body */
+    --muted:#7d7490;          /* violet-grey micro-labels */
+    --line:rgba(236,228,214,0.12);
 
-    /* glass */
-    --glass-fill:        rgba(255,255,255,0.34);
-    --glass-yellow:      rgba(255,227,79,0.30);
-    --glass-border:      rgba(255,255,255,0.72);
-    --glass-blur:        blur(16px) saturate(135%);
-    --glass-shadow:      0 10px 34px rgba(26,24,20,0.16);
-  }
+    --glass:rgba(13,16,30,0.58);
+    --glass-bright:rgba(28,24,52,0.62);
+    --glass-border:rgba(236,228,214,0.14);
 
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-    font-size: 17px;
-    line-height: 1.55;
-    overflow-x: hidden;
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(26,24,20,0.06) 1px, transparent 0),
-      radial-gradient(circle at 30% 20%, rgba(255,227,79,0.18), transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(255,122,171,0.10), transparent 35%);
-    background-size: 22px 22px, 100% 100%, 100% 100%;
+    --display:ui-sans-serif,'SF Pro Display','Segoe UI Variable Display','Segoe UI',system-ui,sans-serif;
+    --sans:ui-sans-serif,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
   }
 
-  /* Paper edge vignette */
-  body::before {
-    content:''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    box-shadow: inset 0 0 80px rgba(139,111,71,0.18);
+  html{scroll-behavior:smooth}
+  body{
+    /* dusk gradient fallback shown only if the WebGL canvas fails to init */
+    background:linear-gradient(180deg,#1a1530 0%,#3b2a4a 46%,#7a4a55 74%,#c9703f 88%,#f2c14e 100%) fixed;
+    color:var(--body);
+    font-family:var(--sans);
+    font-size:16px;line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   }
 
-  main { position: relative; z-index: 1; }
+  /* display face — heavy system grotesque, art-directed (NOT Inter) */
+  .display{font-family:var(--display);font-weight:700;letter-spacing:-0.025em;line-height:1.0;text-wrap:balance;color:var(--head)}
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:0.16em;font-size:0.7rem;color:var(--muted)}
 
-  /* ───── TYPOGRAPHY ───── */
-  .display {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900;
-    line-height: 0.92;
-    letter-spacing: -0.025em;
-    text-wrap: balance;
-  }
-  .italic { font-style: italic; font-weight: 700; }
-  .mono { font-family: 'Iowan Old Style', 'Georgia', serif; font-feature-settings: "ss01"; }
-  .label {
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--ink-soft);
-  }
-  .underline-wave {
-    background-image: linear-gradient(transparent 60%, var(--highlight) 60%, var(--highlight) 92%, transparent 92%);
-    padding: 0 0.15em;
-  }
-  .ink-circle {
-    position: relative; display: inline-block;
-  }
-  .ink-circle::after {
-    content:''; position: absolute; inset: -8px -14px;
-    border: 2px solid var(--ink); border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
-    transform: rotate(-2deg);
-    pointer-events: none;
-  }
+  /* ───── 3D CANVAS (fixed behind hero) ───── */
+  #scene{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
 
   /* ───── NAV ───── */
-  header.topnav {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(255,255,255,0.30);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border-bottom: 1px solid var(--glass-border);
-    box-shadow: 0 4px 24px rgba(26,24,20,0.08);
-    padding: 0.9rem 6vw;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem;
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.1rem clamp(1.2rem,5vw,3.4rem);
+    background:rgba(11,14,26,0.0);
+    transition:background .4s ease,border-color .4s ease,box-shadow .4s;
+    border-bottom:1px solid transparent;
   }
-  .logo {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900; font-size: 1.4rem;
-    color: var(--ink); text-decoration: none;
-    letter-spacing: -0.02em;
-    display: inline-flex; align-items: baseline; gap: 0.15em;
-  }
-  .logo .dot {
-    display: inline-block; width: 8px; height: 8px; background: var(--pink);
-    border-radius: 50%; margin-left: 4px;
-  }
-  nav.links { display: flex; gap: 2rem; }
-  nav.links a {
-    color: var(--ink-soft); text-decoration: none;
-    font-size: 0.95rem; font-style: italic;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  nav.links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
-  .nav-cta {
-    background: var(--ink); color: var(--paper);
-    padding: 0.55rem 1.2rem; border-radius: 999px;
-    text-decoration: none; font-weight: 700;
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 0.82rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: transform 0.15s;
-  }
-  .nav-cta:hover { transform: translateY(-1px); }
+  header.solid{background:rgba(11,14,26,0.72);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border-bottom-color:var(--line)}
+  .brand{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+  .brand .glyph{width:22px;height:22px;border-radius:6px;background:
+      radial-gradient(circle at 70% 34%, var(--gold) 0 22%, transparent 24%),
+      linear-gradient(180deg,#241a38,#0b0e1a);
+    box-shadow:0 0 14px rgba(242,193,78,.35);flex:none}
+  .brand .name{font-family:var(--display);font-weight:700;letter-spacing:.02em;font-size:1.02rem;color:var(--head)}
+  nav{display:flex;align-items:center;gap:.4rem}
+  nav a.link{color:var(--body);text-decoration:none;font-size:.86rem;font-weight:500;padding:.5rem .9rem;border-radius:8px;position:relative;transition:color .2s}
+  nav a.link::after{content:'';position:absolute;left:.9rem;right:.9rem;bottom:.36rem;height:1.5px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .25s ease;border-radius:2px}
+  nav a.link:hover{color:var(--head)}
+  nav a.link:hover::after{transform:scaleX(1)}
+  .btn{font-family:var(--sans);font-weight:600;font-size:.86rem;letter-spacing:.01em;text-decoration:none;border-radius:999px;padding:.62rem 1.3rem;display:inline-flex;align-items:center;gap:.5rem;transition:transform .16s,box-shadow .18s,background .2s,border-color .2s;cursor:pointer;border:1px solid transparent}
+  .btn svg{width:15px;height:15px}
+  .btn-gold{background:var(--gold);color:#241500;box-shadow:0 6px 24px -6px rgba(242,193,78,.55)}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 34px -8px rgba(242,193,78,.7)}
+  .btn-ghost{background:rgba(236,228,214,0.04);color:var(--head);border-color:var(--glass-border)}
+  .btn-ghost:hover{transform:translateY(-2px);background:rgba(236,228,214,0.09);border-color:rgba(236,228,214,0.28)}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
 
   /* ───── HERO ───── */
-  .hero {
-    padding: 5rem 6vw 6rem;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-    gap: 5rem;
-    align-items: center;
-  }
+  .hero{position:relative;z-index:2;min-height:100svh;display:flex;align-items:flex-end;padding:0 clamp(1.2rem,5vw,3.4rem) clamp(3rem,9vh,7rem)}
+  .hero-inner{max-width:760px;width:100%}
+  .hero .idx{display:block;margin-bottom:1.4rem}
+  .hero h1{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,6.4vw,6rem);line-height:0.98;letter-spacing:-0.03em;color:var(--head);text-wrap:balance;margin-bottom:1.5rem;text-shadow:0 2px 40px rgba(11,14,26,0.55)}
+  .hero h1 .em{color:var(--gold);font-style:normal}
+  .hero p.lede{font-size:clamp(1.02rem,1.5vw,1.22rem);color:var(--body);max-width:33ch;line-height:1.55;margin-bottom:2.2rem;text-shadow:0 1px 20px rgba(11,14,26,0.6)}
+  .hero p.lede em{color:var(--head);font-style:normal;font-weight:600}
+  .hero-cta{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
+  .hero-foot{display:flex;align-items:center;gap:1.2rem;margin-top:1.8rem;flex-wrap:wrap}
+  .replay{background:none;border:none;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:.66rem;cursor:pointer;display:inline-flex;align-items:center;gap:.45rem;padding:.3rem 0;transition:color .2s}
+  .replay:hover{color:var(--gold)}
+  .replay svg{width:12px;height:12px}
 
-  .hero-left { position: relative; }
+  /* hero reveal */
+  .rise{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+  .rise.in{opacity:1;transform:none}
 
-  .meta-row {
-    display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
-    flex-wrap: wrap;
-  }
-  .stamp {
-    border: 1.5px solid var(--ink);
-    padding: 0.3rem 0.7rem; border-radius: 4px;
-    transform: rotate(-2deg);
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-    font-weight: 700;
-    background: var(--paper);
-  }
-  .stamp.pink { color: var(--pink); border-color: var(--pink); transform: rotate(1.5deg); }
+  .scrollcue{position:absolute;left:50%;bottom:1.6rem;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:.5rem;color:var(--muted)}
+  .scrollcue .bar{width:1px;height:34px;background:linear-gradient(var(--gold),transparent);animation:cue 2s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
 
-  h1.hero-title {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900;
-    font-size: clamp(3rem, 6.5vw, 5.6rem);
-    line-height: 0.92; letter-spacing: -0.03em;
-    color: var(--ink);
-    margin-bottom: 1.75rem;
-    text-wrap: balance;
-  }
-  h1.hero-title .italic-accent {
-    font-style: italic; font-weight: 700; color: var(--ink);
-    position: relative; display: inline-block;
-  }
-  h1.hero-title .italic-accent::before {
-    content:''; position: absolute; inset: 78% -0.1em 0% -0.1em;
-    background: var(--pink); opacity: 0.55; z-index: -1;
-    border-radius: 2px 8px 4px 6px;
-    transform: rotate(-1deg);
-  }
+  /* elevation ticker */
+  .ticker{position:fixed;left:clamp(1.2rem,5vw,3.4rem);bottom:1.3rem;z-index:40;font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;pointer-events:none;font-variant-numeric:tabular-nums;mix-blend-mode:screen}
 
-  .lede {
-    font-size: 1.18rem; color: var(--ink-soft);
-    max-width: 460px; line-height: 1.55;
-    margin-bottom: 2.25rem;
+  /* ───── CONTENT SHEET (day-arc into night) ───── */
+  .sheet{position:relative;z-index:5;background:linear-gradient(180deg,
+      rgba(11,14,26,0) 0,
+      #1c1733 5%,
+      #181230 38%,
+      #120f24 70%,
+      var(--ink) 100%);
   }
-  .lede em { font-style: italic; color: var(--ink); }
+  .sheet::before{content:'';position:absolute;top:-120px;left:0;right:0;height:160px;background:linear-gradient(180deg,transparent,#1c1733);pointer-events:none}
 
-  .hero-cta-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  section{max-width:1180px;margin:0 auto;padding:clamp(4.5rem,10vh,8rem) clamp(1.2rem,5vw,3rem)}
+  .sec-head{display:flex;align-items:baseline;gap:1.2rem;margin-bottom:3rem;flex-wrap:wrap}
+  .sec-head .num{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--gold);white-space:nowrap}
+  .sec-head h2{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4vw,3.1rem);line-height:1.02;letter-spacing:-0.025em;color:var(--head);text-wrap:balance}
+  .sec-head .blurb{color:var(--body);font-size:1rem;max-width:42ch;line-height:1.6;margin-left:auto}
 
-  .btn-primary {
-    background: var(--ink); color: var(--paper);
-    padding: 0.95rem 1.7rem; border-radius: 999px;
-    text-decoration: none; font-weight: 700;
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 0.9rem; letter-spacing: 0.06em;
-    text-transform: uppercase;
-    display: inline-flex; align-items: center; gap: 0.6rem;
-    transition: transform 0.18s, box-shadow 0.18s;
-    box-shadow: 4px 4px 0 var(--ink);
-    border: 1.5px solid var(--ink);
-  }
-  .btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
-  .btn-primary svg { width: 16px; height: 16px; }
+  /* features */
+  .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+  .card{position:relative;background:var(--glass);backdrop-filter:blur(16px) saturate(135%);-webkit-backdrop-filter:blur(16px) saturate(135%);border:1px solid var(--glass-border);border-radius:18px;padding:2rem 1.9rem;overflow:hidden;transition:transform .22s ease,border-color .25s,box-shadow .25s}
+  .card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(150deg,rgba(236,228,214,.07),transparent 42%)}
+  .card:hover{transform:translateY(-5px);border-color:rgba(242,193,78,.4);box-shadow:0 22px 50px -22px rgba(0,0,0,.7)}
+  .card .ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(242,193,78,.1);border:1px solid rgba(242,193,78,.22);margin-bottom:1.2rem;transition:background .25s}
+  .card .ico svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .card:hover .ico{background:rgba(242,193,78,.2)}
+  .card h3{font-family:var(--display);font-weight:600;font-size:1.22rem;letter-spacing:-0.01em;color:var(--head);margin-bottom:.5rem}
+  .card p{color:var(--body);font-size:.92rem;line-height:1.6}
+  .card .tag{display:inline-block;margin-top:1.1rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;color:var(--muted);border:1px solid var(--line);padding:.24rem .6rem;border-radius:999px}
 
-  .btn-secondary {
-    color: var(--ink);
-    padding: 0.95rem 1.4rem; border-radius: 999px;
-    text-decoration: none; font-weight: 700;
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 0.9rem; letter-spacing: 0.06em;
-    text-transform: uppercase;
-    display: inline-flex; align-items: center; gap: 0.6rem;
-    border: 1.5px solid var(--ink);
-    background: transparent;
-    transition: background 0.18s;
-  }
-  .btn-secondary:hover { background: var(--highlight); }
-  .btn-secondary svg { width: 16px; height: 16px; }
+  /* how it works — climb the ridge */
+  .climb{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:1rem}
+  .climb::before{content:'';position:absolute;top:34px;left:8%;right:8%;height:1px;background:repeating-linear-gradient(90deg,rgba(242,193,78,.5) 0 6px,transparent 6px 14px)}
+  .step{position:relative;text-align:left}
+  .step .dot{width:68px;height:68px;border-radius:50%;background:var(--ink);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:1.1rem;color:var(--gold);position:relative;z-index:1;margin-bottom:1.3rem;box-shadow:0 0 0 6px rgba(11,14,26,1)}
+  .step .lbl{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;color:var(--muted);margin-bottom:.5rem}
+  .step h4{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--head);margin-bottom:.5rem}
+  .step p{color:var(--body);font-size:.92rem;line-height:1.6}
 
-  .arrow-scribble {
-    position: absolute;
-    bottom: -50px; left: 60%;
-    width: 100px; height: 60px;
-    color: var(--ink);
-    transform: rotate(8deg);
-  }
+  /* pricing */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;align-items:stretch}
+  .plan{display:flex;flex-direction:column;gap:1.1rem;background:var(--glass);backdrop-filter:blur(16px) saturate(135%);-webkit-backdrop-filter:blur(16px) saturate(135%);border:1px solid var(--glass-border);border-radius:18px;padding:2rem 1.7rem;position:relative;overflow:hidden}
+  .plan.pro{border-color:rgba(242,193,78,.55);box-shadow:0 0 0 1px rgba(242,193,78,.25),0 30px 60px -30px rgba(242,193,78,.25)}
+  .plan.pro::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(120% 60% at 80% -10%,rgba(242,193,78,.14),transparent 60%)}
+  .plan .pname{font-family:var(--display);font-weight:700;font-size:1.2rem;color:var(--head)}
+  .plan .psub{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+  .plan .price{font-family:var(--display);font-weight:700;font-size:2.5rem;letter-spacing:-0.03em;color:var(--head);line-height:1;font-variant-numeric:tabular-nums}
+  .plan .price .per{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--muted);font-weight:400}
+  .plan ul{list-style:none;display:flex;flex-direction:column;gap:.6rem;flex:1}
+  .plan li{font-size:.88rem;color:var(--body);padding-left:1.5rem;position:relative;line-height:1.45}
+  .plan li::before{content:'';position:absolute;left:0;top:.42em;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 7px rgba(242,193,78,.6)}
+  .plan li.off{color:var(--muted);opacity:.5}
+  .plan li.off::before{background:var(--muted);box-shadow:none}
+  .plan .pbtn{margin-top:auto;text-align:center;text-decoration:none;font-family:var(--sans);font-weight:600;font-size:.86rem;padding:.85rem;border-radius:999px;border:1px solid var(--glass-border);background:rgba(236,228,214,.05);color:var(--head);transition:transform .15s,background .2s,border-color .2s}
+  .plan .pbtn:hover{transform:translateY(-2px);background:rgba(236,228,214,.1)}
+  .plan .pbtn.gold{background:var(--gold);color:#241500;border-color:transparent;box-shadow:0 8px 26px -8px rgba(242,193,78,.6)}
+  .plan .pbtn.gold:hover{box-shadow:0 14px 34px -10px rgba(242,193,78,.75)}
+  .plan .badge{position:absolute;top:1.3rem;right:1.3rem;font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;color:var(--gold);border:1px solid rgba(242,193,78,.35);padding:.2rem .55rem;border-radius:999px}
 
-  /* ───── POLAROID APP MOCKUP ───── */
-  .polaroid-stack { position: relative; min-height: 480px; }
+  /* CTA */
+  .cta{max-width:1180px;margin:0 auto;padding:clamp(4rem,9vh,7rem) clamp(1.2rem,5vw,3rem) clamp(5rem,10vh,8rem)}
+  .cta-inner{display:flex;align-items:center;justify-content:space-between;gap:3rem;flex-wrap:wrap}
+  .cta h2{font-family:var(--display);font-weight:700;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1;letter-spacing:-0.03em;color:var(--head);text-wrap:balance;max-width:16ch}
+  .cta h2 .em{color:var(--gold)}
+  .cta p{color:var(--body);margin-top:.8rem}
 
-  .polaroid {
-    background: #FBFAF4;
-    padding: 14px 14px 56px;
-    box-shadow:
-      0 1px 2px rgba(26,24,20,0.05),
-      0 12px 24px -8px rgba(26,24,20,0.18),
-      0 30px 60px -15px rgba(26,24,20,0.22);
-    border-radius: 2px;
-    position: absolute;
-    transition: transform 0.3s ease;
-  }
-  .polaroid:hover { transform: rotate(0deg) translateY(-4px) !important; }
+  /* footer */
+  footer{background:var(--ink);border-top:1px solid var(--line)}
+  .foot-inner{max-width:1180px;margin:0 auto;padding:3rem clamp(1.2rem,5vw,3rem) 2.4rem;display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap;align-items:flex-start}
+  .foot-brand{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--head)}
+  .foot-tag{color:var(--muted);font-size:.85rem;margin-top:.3rem;max-width:30ch}
+  .foot-links{display:flex;gap:2.4rem;flex-wrap:wrap}
+  .foot-col{display:flex;flex-direction:column;gap:.6rem}
+  .foot-col .h{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;color:var(--muted);margin-bottom:.2rem}
+  .foot-col a{color:var(--body);text-decoration:none;font-size:.86rem;transition:color .2s}
+  .foot-col a:hover{color:var(--gold)}
+  .foot-base{max-width:1180px;margin:0 auto;padding:1.4rem clamp(1.2rem,5vw,3rem);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  .foot-base .mono{font-size:.62rem}
 
-  .polaroid-caption {
-    position: absolute; bottom: 18px; left: 0; right: 0;
-    text-align: center;
-    font-family: 'Caveat', 'Bradley Hand', cursive;
-    font-style: italic;
-    font-size: 1.1rem; color: var(--ink-soft);
+  /* responsive */
+  @media(max-width:880px){
+    nav .link{display:none}
+    .feat-grid{grid-template-columns:1fr}
+    .climb{grid-template-columns:1fr;gap:2.4rem}
+    .climb::before{display:none}
+    .plans{grid-template-columns:1fr;max-width:420px;margin:0 auto}
+    .sec-head .blurb{margin-left:0}
+    .hero p.lede{max-width:100%}
   }
-
-  /* App phone-ish mockup inside polaroid */
-  .phone-mock {
-    width: 100%; aspect-ratio: 3/4;
-    background: linear-gradient(165deg, #0F1426 0%, #1A2238 100%);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid rgba(0,0,0,0.1);
-  }
-
-  .phone-header {
-    padding: 18px 18px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .phone-header-row { display: flex; justify-content: space-between; align-items: center; }
-  .phone-logo { font-size: 0.78rem; font-weight: 700; color: var(--highlight); letter-spacing: 0.1em; }
-  .phone-badge { font-size: 0.55rem; color: rgba(255,255,255,0.5); font-family: monospace; }
-
-  .phone-tabs {
-    display: flex; gap: 4px; padding: 8px 14px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .phone-tab {
-    flex: 1; padding: 6px 4px;
-    font-size: 0.55rem; text-align: center;
-    color: rgba(255,255,255,0.4);
-    border-bottom: 2px solid transparent;
-    font-weight: 600; letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .phone-tab.active { color: var(--highlight); border-bottom-color: var(--highlight); }
-
-  .phone-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-  .idea-row {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 6px; padding: 10px 12px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .idea-row-top { display: flex; justify-content: space-between; align-items: center; }
-  .idea-title { font-size: 0.7rem; font-weight: 700; color: #fff; font-family: system-ui; }
-  .idea-money { font-size: 0.62rem; color: var(--highlight); font-weight: 700; font-family: monospace; }
-  .idea-desc { font-size: 0.55rem; color: rgba(255,255,255,0.5); line-height: 1.4; font-family: system-ui; }
-  .idea-tags { display: flex; gap: 4px; margin-top: 2px; }
-  .idea-tag {
-    font-size: 0.5rem; color: rgba(255,255,255,0.7); font-family: system-ui;
-    padding: 2px 5px; border-radius: 3px;
-    background: rgba(255,227,79,0.15);
-  }
-
-  /* Tape */
-  .tape {
-    position: absolute;
-    background: var(--tape);
-    width: 80px; height: 22px;
-    z-index: 2;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-
-  .polaroid-1 {
-    width: 320px; top: 10px; left: 80px; transform: rotate(-5deg); z-index: 3;
-  }
-  .polaroid-1 .tape { top: -8px; left: 110px; transform: rotate(-3deg); }
-
-  .polaroid-2 {
-    width: 220px; top: 320px; left: 10px; transform: rotate(4deg); z-index: 2;
-    background: var(--paper-2);
-    padding: 1.2rem;
-    border-radius: 4px;
-  }
-  .polaroid-2 .tape { top: -8px; left: 70px; transform: rotate(2deg); background: var(--pink); opacity: 0.7; }
-
-  .sticky-note-content {
-    font-family: 'Caveat', 'Bradley Hand', cursive;
-    font-style: italic;
-    font-size: 1.15rem; color: var(--ink);
-    line-height: 1.35;
-  }
-  .sticky-note-content strong { background: var(--highlight); padding: 0 4px; font-style: italic; }
-
-  /* ───── SECTIONS ───── */
-  section { padding: 6rem 6vw; position: relative; }
-
-  .section-header {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
-    align-items: end; margin-bottom: 4rem;
-    border-bottom: 1.5px solid var(--ink);
-    padding-bottom: 2rem;
-  }
-  .section-header h2 {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900;
-    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
-    line-height: 0.95; letter-spacing: -0.02em;
-    color: var(--ink); text-wrap: balance;
-  }
-  .section-header .italic { font-style: italic; }
-  .section-meta {
-    display: flex; flex-direction: column; gap: 0.5rem;
-    text-align: left;
-  }
-  .section-meta .nbr {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-style: italic; font-size: 2rem; color: var(--pencil);
-    line-height: 1;
-  }
-  .section-meta .blurb { color: var(--ink-soft); font-size: 0.95rem; max-width: 360px; }
-
-  /* ───── TOOLS GRID ───── */
-  .tools-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
-  }
-  .tool {
-    background:
-      linear-gradient(160deg, rgba(255,255,255,0.55), rgba(255,255,255,0.04) 45%),
-      var(--glass-fill);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    padding: 2rem 1.8rem 2rem;
-    border-radius: 14px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    position: relative;
-    transition: transform 0.18s, box-shadow 0.18s;
-  }
-  .tool:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(26,24,20,0.20); }
-  .tool:nth-child(odd) { transform: rotate(-0.5deg); }
-  .tool:nth-child(even) { transform: rotate(0.5deg); }
-  .tool:nth-child(odd):hover { transform: rotate(-0.5deg) translateY(-3px); }
-  .tool:nth-child(even):hover { transform: rotate(0.5deg) translateY(-3px); }
-
-  .tool-tag {
-    position: absolute; top: -10px; right: 1.5rem;
-    background: var(--ink); color: var(--paper);
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
-    font-weight: 700;
-    padding: 0.25rem 0.7rem; border-radius: 4px;
-  }
-  .tool-tag.pink { background: var(--pink); }
-  .tool-tag.moss { background: var(--moss); }
-  .tool-tag.highlight { background: var(--highlight); color: var(--ink); }
-
-  .tool-num {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-style: italic;
-    font-size: 1.5rem;
-    color: var(--pencil);
-    margin-bottom: 0.5rem;
-  }
-  .tool h3 {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900;
-    font-size: 1.6rem;
-    line-height: 1; letter-spacing: -0.015em;
-    margin-bottom: 0.85rem;
-  }
-  .tool h3 em { font-style: italic; }
-  .tool p { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.55; }
-
-  /* ───── PLANS ───── */
-  .plans-section {
-    background:
-      repeating-linear-gradient(180deg, transparent 0 27px, var(--rule) 27px 28px);
-    background-color: var(--paper-2);
-    border-top: 1.5px solid var(--ink);
-    border-bottom: 1.5px solid var(--ink);
-  }
-  .plans-section .section-header { border-bottom-color: var(--ink); }
-
-  .plans-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
-  }
-  .plan {
-    background:
-      linear-gradient(160deg, rgba(255,255,255,0.6), rgba(255,255,255,0.05) 42%),
-      var(--glass-fill);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 14px;
-    padding: 2rem 1.6rem;
-    display: flex; flex-direction: column; gap: 1.1rem;
-    position: relative;
-    box-shadow: 5px 5px 0 rgba(26,24,20,0.12), var(--glass-shadow);
-  }
-  .plan.featured {
-    background:
-      linear-gradient(160deg, rgba(255,255,255,0.5), transparent 45%),
-      var(--glass-yellow);
-    border-color: rgba(255,227,79,0.85);
-  }
-  .plan.featured .stamp { background: var(--paper); border-color: var(--ink); }
-
-  .plan-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-  .plan-name {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900; font-size: 1.4rem; letter-spacing: -0.01em;
-  }
-  .plan-name .italic { font-style: italic; }
-  .plan-sub { font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.2rem; }
-  .plan-price {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900;
-    font-size: 2.4rem; line-height: 1; letter-spacing: -0.03em;
-  }
-  .plan-price .period { font-size: 0.95rem; font-weight: 400; color: var(--ink-soft); }
-  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-  .plan-features li {
-    font-size: 0.92rem; color: var(--ink-soft);
-    padding-left: 1.3rem; position: relative; line-height: 1.4;
-  }
-  .plan-features li::before {
-    content: '✓'; position: absolute; left: 0; top: 0;
-    font-weight: 900; color: var(--moss);
-  }
-  .plan-features li.locked { color: var(--pencil); opacity: 0.55; }
-  .plan-features li.locked::before { content: '×'; color: var(--pencil); }
-
-  .plan-btn {
-    text-align: center; text-decoration: none;
-    padding: 0.85rem; border-radius: 999px;
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    font-weight: 700; font-size: 0.85rem;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    border: 1.5px solid var(--ink);
-    background: var(--ink); color: var(--paper);
-    margin-top: auto;
-    transition: transform 0.15s;
-  }
-  .plan-btn.outline { background: transparent; color: var(--ink); }
-  .plan-btn.outline:hover { background: var(--ink); color: var(--paper); }
-  .plan-btn:hover { transform: translateY(-1px); }
-
-  /* ───── PROCESS ───── */
-  .process {
-    background: var(--paper);
-  }
-  .process-list {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;
-  }
-  .process-step {
-    border-top: 1.5px solid var(--ink);
-    padding-top: 1.2rem;
-  }
-  .process-num {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900; font-style: italic;
-    font-size: 3.2rem; line-height: 1;
-    color: var(--ink);
-  }
-  .process-step h4 {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900; font-size: 1.3rem;
-    margin: 0.5rem 0 0.7rem;
-  }
-  .process-step h4 em { font-style: italic; }
-  .process-step p { color: var(--ink-soft); font-size: 0.95rem; }
-
-  /* ───── CTA ───── */
-  .cta-card {
-    background: var(--ink); color: var(--paper);
-    padding: 4rem 3rem;
-    border-radius: 6px;
-    display: grid; grid-template-columns: 1fr auto; gap: 3rem;
-    align-items: center;
-    box-shadow: 12px 12px 0 var(--pink);
-    margin: 0 6vw;
-    margin-bottom: 6rem;
-  }
-  .cta-card h2 {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900; font-size: clamp(1.8rem, 3vw, 2.6rem);
-    line-height: 0.98; letter-spacing: -0.02em;
-    color: var(--paper); text-wrap: balance;
-  }
-  .cta-card h2 em { font-style: italic; color: var(--highlight); }
-  .cta-card p { color: rgba(244,236,216,0.7); margin-top: 0.7rem; font-size: 1rem; }
-
-  .cta-actions { display: flex; flex-direction: column; gap: 0.7rem; }
-  .cta-actions a {
-    background: var(--highlight); color: var(--ink);
-    padding: 1rem 2rem; border-radius: 999px;
-    text-decoration: none; font-weight: 700;
-    font-family: 'Helvetica Neue', system-ui, sans-serif;
-    font-size: 0.95rem; letter-spacing: 0.06em;
-    text-transform: uppercase; text-align: center;
-    border: 1.5px solid var(--highlight);
-    display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
-    white-space: nowrap;
-  }
-  .cta-actions a.outline {
-    background: transparent; color: var(--paper); border-color: var(--paper);
-  }
-  .cta-actions a svg { width: 16px; height: 16px; }
-
-  /* ───── FOOTER ───── */
-  footer.footer {
-    padding: 3rem 6vw 2rem;
-    border-top: 1.5px solid var(--ink);
-    display: flex; align-items: flex-start; justify-content: space-between;
-    gap: 2rem; flex-wrap: wrap;
-  }
-  footer .footer-mark {
-    font-family: 'Iowan Old Style', 'Georgia', serif;
-    font-weight: 900; font-size: 1.5rem;
-    color: var(--ink); text-decoration: none;
-  }
-  footer .footer-tag { color: var(--ink-soft); font-style: italic; margin-top: 0.3rem; }
-  footer .footer-meta { font-size: 0.82rem; color: var(--ink-soft); text-align: right; line-height: 1.6; }
-  footer .footer-meta a { color: var(--ink); text-decoration: underline; }
-
-  /* ───── RESPONSIVE ───── */
-  @media (max-width: 920px) {
-    .hero { grid-template-columns: 1fr; gap: 3rem; padding: 3rem 6vw 4rem; }
-    .polaroid-stack { min-height: 540px; max-width: 380px; margin: 0 auto; }
-    .section-header { grid-template-columns: 1fr; gap: 1rem; }
-    .tools-grid { grid-template-columns: 1fr; }
-    .plans-grid { grid-template-columns: 1fr; }
-    .process-list { grid-template-columns: 1fr; gap: 2rem; }
-    .cta-card { grid-template-columns: 1fr; padding: 2.5rem 1.8rem; }
-    nav.links { display: none; }
-  }
-
-  @media (max-width: 520px) {
-    .polaroid-1 { width: 260px; left: 30px; }
-    .polaroid-2 { width: 200px; top: 290px; left: 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+    .rise{opacity:1;transform:none}
   }
 </style>
 </head>
 <body>
 
-<header class="topnav">
-  <a href="#" class="logo">Teen Lab<span class="dot"></span></a>
-  <nav class="links">
-    <a href="#tools">Tools</a>
-    <a href="#plans">Plans</a>
-    <a href="#process">How it works</a>
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="ticker" id="ticker" aria-hidden="true">ALT 0,000 m</div>
+
+<header id="hdr">
+  <a href="#" class="brand" aria-label="Teen Lab home">
+    <span class="glyph" aria-hidden="true"></span>
+    <span class="name">Teen&nbsp;Lab</span>
+  </a>
+  <nav>
+    <a href="#features" class="link">Features</a>
+    <a href="#how" class="link">How it works</a>
+    <a href="#pricing" class="link">Pricing</a>
+    <a href="https://teen-lab.vercel.app" class="btn btn-gold">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Launch app
+    </a>
   </nav>
-  <a href="https://teen-lab.vercel.app" class="nav-cta">Open the App</a>
 </header>
 
-<main>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-left">
-      <div class="meta-row">
-        <span class="stamp">Beta · v1.0.12</span>
-        <span class="stamp pink">For ages 13–22</span>
-      </div>
-      <h1 class="hero-title">
-        Build something <span class="italic-accent">people pay for</span> — before you even finish high school.
-      </h1>
-      <p class="lede">
-        Teen Lab is a <em>toolkit</em> for ambitious teenagers who want to discover, simulate, and ship their first real digital product. Not a side gig. Not a school project. <em>Something people pay for.</em>
-      </p>
-      <div class="hero-cta-row">
-        <a href="https://teen-lab.vercel.app" class="btn-primary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Try in browser
-        </a>
-        <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="btn-secondary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Get the desktop app
-        </a>
-      </div>
-
-      <svg class="arrow-scribble" viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M2 30 Q 40 5, 75 30 T 110 32" stroke-dasharray="0"/>
-        <path d="M100 22 L 112 32 L 100 42"/>
-      </svg>
-    </div>
-
-    <div class="polaroid-stack">
-      <div class="polaroid polaroid-1">
-        <div class="tape"></div>
-        <div class="phone-mock">
-          <div class="phone-header">
-            <div class="phone-header-row">
-              <div class="phone-logo">TEEN LAB</div>
-              <div class="phone-badge">v1.0.12</div>
-            </div>
-          </div>
-          <div class="phone-tabs">
-            <div class="phone-tab active">Discover</div>
-            <div class="phone-tab">AI Ideas</div>
-            <div class="phone-tab">Sim</div>
-            <div class="phone-tab">Launch</div>
-          </div>
-          <div class="phone-body">
-            <div class="idea-row">
-              <div class="idea-row-top">
-                <div class="idea-title">StudySync Dashboard</div>
-                <div class="idea-money">$120–$290</div>
-              </div>
-              <div class="idea-desc">Personal study tracker with streaks and goal visuals.</div>
-              <div class="idea-tags">
-                <span class="idea-tag">Productivity</span>
-                <span class="idea-tag">Study</span>
-              </div>
-            </div>
-            <div class="idea-row">
-              <div class="idea-row-top">
-                <div class="idea-title">SnapCaption AI</div>
-                <div class="idea-money">$180–$430</div>
-              </div>
-              <div class="idea-desc">Viral captions and hashtags for TikTok and Instagram.</div>
-              <div class="idea-tags">
-                <span class="idea-tag">AI</span>
-                <span class="idea-tag">Creators</span>
-              </div>
-            </div>
-            <div class="idea-row">
-              <div class="idea-row-top">
-                <div class="idea-title">FitStreak Coach</div>
-                <div class="idea-money">$110–$265</div>
-              </div>
-              <div class="idea-desc">Gamified workout streaks with leaderboards.</div>
-              <div class="idea-tags">
-                <span class="idea-tag">Fitness</span>
-                <span class="idea-tag">Gaming</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="polaroid-caption">first build — 6/27</div>
-      </div>
-
-      <div class="polaroid polaroid-2">
-        <div class="tape"></div>
-        <p class="sticky-note-content">
-          made <strong>$340</strong> from my study app in two weeks. didn't even tell my parents 🤫
-        </p>
-        <p style="font-family:'Caveat',cursive;font-size:0.95rem;color:var(--pencil);margin-top:0.4rem;text-align:right;">— Maya, 16</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- TOOLS -->
-  <section id="tools">
-    <div class="section-header">
-      <h2>Four tools, one <span class="italic">obvious</span> mission.</h2>
-      <div class="section-meta">
-        <div class="nbr">01.</div>
-        <div class="label">Inside the kit</div>
-        <p class="blurb">Everything you need to move from <em>"I have an idea"</em> to <em>"I have paying users."</em> No business degree. No pitch deck.</p>
-      </div>
-    </div>
-
-    <div class="tools-grid">
-      <article class="tool">
-        <span class="tool-tag highlight">Free trial</span>
-        <div class="tool-num">i.</div>
-        <h3>Discover <em>ideas</em></h3>
-        <p>Sixteen curated micro-products that real teens are actually shipping. Each one comes with earning ranges, the tech stack to build it, and the first move to make today.</p>
-      </article>
-
-      <article class="tool">
-        <span class="tool-tag">Full app</span>
-        <div class="tool-num">ii.</div>
-        <h3>The AI <em>idea generator</em></h3>
-        <p>Tell it your skills, interests, and weekly time budget. Get three personalized product ideas every run — with earnings, stack, and first step tailored to your exact profile.</p>
-      </article>
-
-      <article class="tool">
-        <span class="tool-tag highlight">Free trial</span>
-        <div class="tool-num">iii.</div>
-        <h3>The <em>money</em> simulator</h3>
-        <p>Type in your traffic, conversion rate, ad CPM, and pricing. Watch projected monthly revenue update live across ad revenue, affiliates, and subscriptions.</p>
-      </article>
-
-      <article class="tool">
-        <span class="tool-tag pink">Pro feature</span>
-        <div class="tool-num">iv.</div>
-        <h3>The <em>launch</em> planner</h3>
-        <p>Pick any idea and the planner builds a week-by-week launch roadmap plus a codegen prompt you can paste straight into Cursor or ChatGPT to start building.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- PLANS -->
-  <section class="plans-section" id="plans">
-    <div class="section-header">
-      <h2>Pick your <span class="italic">path.</span></h2>
-      <div class="section-meta">
-        <div class="nbr">02.</div>
-        <div class="label">Three ways in</div>
-        <p class="blurb">Start free in the browser, download the full desktop app, or go Pro for the AI tools. Switch whenever.</p>
-      </div>
-    </div>
-
-    <div class="plans-grid">
-      <article class="plan">
-        <div class="plan-header">
-          <div>
-            <div class="plan-name">Web <span class="italic">Trial</span></div>
-            <div class="plan-sub">In your browser, no signup</div>
-          </div>
-          <span class="stamp">Free</span>
-        </div>
-        <div class="plan-price">Free</div>
-        <ul class="plan-features">
-          <li>Browse all 16 curated ideas</li>
-          <li>Money Simulator (basic)</li>
-          <li>Works on any device</li>
-          <li class="locked">AI Idea Generator</li>
-          <li class="locked">Polish My Own Idea</li>
-          <li class="locked">Launch Planner</li>
-        </ul>
-        <a href="https://teen-lab.vercel.app" class="plan-btn outline">Try Now</a>
-      </article>
-
-      <article class="plan featured">
-        <div class="plan-header">
-          <div>
-            <div class="plan-name">Full <span class="italic">App</span></div>
-            <div class="plan-sub">Windows desktop, works offline</div>
-          </div>
-          <span class="stamp">Popular</span>
-        </div>
-        <div class="plan-price">Free</div>
-        <ul class="plan-features">
-          <li>Everything in Web Trial</li>
-          <li>AI Idea Generator</li>
-          <li>Money Simulator (3/day)</li>
-          <li>Works offline</li>
-          <li class="locked">Unlimited simulations</li>
-          <li class="locked">AI Launch Planner</li>
-        </ul>
-        <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="plan-btn">Download Free</a>
-      </article>
-
-      <article class="plan">
-        <div class="plan-header">
-          <div>
-            <div class="plan-name"><span class="italic">Pro</span></div>
-            <div class="plan-sub">Everything unlocked</div>
-          </div>
-          <span class="stamp pink">Coming soon</span>
-        </div>
-        <div class="plan-price">$4.99<span class="period">/mo</span></div>
-        <ul class="plan-features">
-          <li>Everything in Full App</li>
-          <li>Unlimited simulations</li>
-          <li>Polish My Own Idea (AI)</li>
-          <li>AI Launch Planner</li>
-          <li>AI Codegen Prompt</li>
-          <li>Priority new features</li>
-        </ul>
-        <a href="#" class="plan-btn outline">Notify Me</a>
-      </article>
-    </div>
-  </section>
-
-  <!-- PROCESS -->
-  <section class="process" id="process">
-    <div class="section-header">
-      <h2>How it actually <span class="italic">works.</span></h2>
-      <div class="section-meta">
-        <div class="nbr">03.</div>
-        <div class="label">From zero to launched</div>
-        <p class="blurb">Most teens never start because they don't know where to begin. Teen Lab gives you every next step.</p>
-      </div>
-    </div>
-
-    <div class="process-list">
-      <article class="process-step">
-        <div class="process-num">I.</div>
-        <h4>Open in <em>browser</em></h4>
-        <p>Hit Try Now. Browse curated ideas. Run the simulator with whatever numbers you want. No account, no signup, no friction.</p>
-      </article>
-      <article class="process-step">
-        <div class="process-num">II.</div>
-        <h4>Download the <em>full app</em></h4>
-        <p>Install the desktop app for AI-generated ideas matched to you, plus the complete Discover and Simulator experience offline.</p>
-      </article>
-      <article class="process-step">
-        <div class="process-num">III.</div>
-        <h4>Build &amp; <em>ship</em></h4>
-        <p>Go Pro to unlock the Launch Planner and codegen prompts. Paste into Cursor or ChatGPT. Build the product. Get a first paying user.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <div class="cta-card">
-    <div>
-      <h2>Stop reading. <em>Start building.</em></h2>
-      <p>The web trial is one click. No card, no email, no nonsense.</p>
-    </div>
-    <div class="cta-actions">
-      <a href="https://teen-lab.vercel.app">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Open in browser
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <span class="idx mono rise">01 — Discover · Build · Earn</span>
+    <h1 class="rise">Build something people<br><span class="em">pay for</span> — before you<br>finish high school.</h1>
+    <p class="lede rise">Teen Lab is the toolkit to <em>discover</em> a product idea, <em>simulate</em> the money it could make, and <em>plan</em> the launch. No business degree. No permission needed.</p>
+    <div class="hero-cta rise">
+      <a href="https://teen-lab.vercel.app" class="btn btn-gold">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Launch the web app
       </a>
-      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="outline">
+      <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="btn btn-ghost">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download for Windows
       </a>
     </div>
+    <div class="hero-foot rise">
+      <span class="mono">Ages 13–22 · Free to start · Windows &amp; Web</span>
+      <button class="replay" id="replay" type="button" aria-label="Replay the intro animation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        Replay dusk
+      </button>
+    </div>
   </div>
+  <div class="scrollcue" aria-hidden="true"><span class="bar"></span></div>
+</section>
 
-</main>
+<div class="sheet">
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="sec-head">
+      <span class="num">02 — Inside the kit</span>
+      <h2>Four tools that take you from<br>"I have an idea" to paying users.</h2>
+      <p class="blurb">Each one does one job well. Together they're the whole path — discovery, math, and a real plan.</p>
+    </div>
+    <div class="feat-grid">
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Discover Ideas</h3>
+        <p>Browse curated micro-products real teens are shipping — each with earning ranges, the tech stack, and the first move to make today.</p>
+        <span class="tag">Free</span>
+      </article>
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><polygon points="13 2 4 14 11 14 10 22 20 10 13 10 13 2"/></svg></div>
+        <h3>AI Idea Generator</h3>
+        <p>Tell it your skills, interests, and weekly time. Get three product ideas matched to your exact profile — fresh every run.</p>
+        <span class="tag">Full app</span>
+      </article>
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5.5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>Money Simulator</h3>
+        <p>Type in traffic, conversion, and price. Watch projected monthly revenue update live across ads, affiliates, and subscriptions.</p>
+        <span class="tag">Free</span>
+      </article>
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 14s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="14"/></svg></div>
+        <h3>Launch Planner</h3>
+        <p>Pick an idea and get a week-by-week roadmap plus a codegen prompt to paste into Cursor or ChatGPT and start building.</p>
+        <span class="tag">Pro</span>
+      </article>
+    </div>
+  </section>
 
-<footer class="footer">
-  <div>
-    <a href="#" class="footer-mark">Teen Lab</a>
-    <div class="footer-tag">Built for ambitious teenagers.</div>
+  <!-- HOW -->
+  <section id="how">
+    <div class="sec-head">
+      <span class="num">03 — The climb</span>
+      <h2>Three steps up the ridge.</h2>
+      <p class="blurb">Most teens never start because they don't know step one. Here it is — and two and three.</p>
+    </div>
+    <div class="climb">
+      <div class="step">
+        <div class="dot">01</div>
+        <div class="lbl">Step 01 — Discover</div>
+        <h4>Find the idea</h4>
+        <p>Open the web app, browse curated ideas, and run the money simulator. No account, no signup, no friction.</p>
+      </div>
+      <div class="step">
+        <div class="dot">02</div>
+        <div class="lbl">Step 02 — Simulate</div>
+        <h4>Prove the money</h4>
+        <p>Generate ideas matched to you and pressure-test the numbers until one clears the bar you set.</p>
+      </div>
+      <div class="step">
+        <div class="dot">03</div>
+        <div class="lbl">Step 03 — Launch</div>
+        <h4>Ship it</h4>
+        <p>Turn the winner into a week-by-week plan and a codegen prompt — then build it and land a first paying user.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="sec-head">
+      <span class="num">04 — Pricing</span>
+      <h2>Start free. Upgrade when<br>you're ready to launch for real.</h2>
+      <p class="blurb">Try it in the browser, download the full desktop app free, or go Pro for the AI launch tools.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <div><div class="pname">Web Trial</div><div class="psub">In your browser</div></div>
+        <div class="price">Free</div>
+        <ul>
+          <li>Browse all curated ideas</li>
+          <li>Money Simulator (basic)</li>
+          <li>Works on any device</li>
+          <li class="off">AI Idea Generator</li>
+          <li class="off">Launch Planner</li>
+        </ul>
+        <a href="https://teen-lab.vercel.app" class="pbtn">Try now</a>
+      </div>
+      <div class="plan">
+        <span class="badge">Popular</span>
+        <div><div class="pname">Full App</div><div class="psub">Windows desktop · offline</div></div>
+        <div class="price">Free</div>
+        <ul>
+          <li>Everything in Web Trial</li>
+          <li>AI Idea Generator</li>
+          <li>Money Simulator (3/day)</li>
+          <li>Works offline</li>
+          <li class="off">AI Launch Planner</li>
+        </ul>
+        <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe" class="pbtn gold">Download free</a>
+      </div>
+      <div class="plan pro">
+        <span class="badge">Soon</span>
+        <div><div class="pname">Pro</div><div class="psub">Everything unlocked</div></div>
+        <div class="price">$4.99<span class="per"> / mo</span></div>
+        <ul>
+          <li>Everything in Full App</li>
+          <li>Unlimited simulations</li>
+          <li>Polish My Own Idea (AI)</li>
+          <li>AI Launch Planner</li>
+          <li>AI codegen prompts</li>
+        </ul>
+        <a href="#" class="pbtn">Notify me</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="cta-inner">
+    <div>
+      <h2>The sun's still up. <span class="em">Build something people pay for.</span></h2>
+      <p>One click in the browser. No card, no email, no nonsense.</p>
+    </div>
+    <a href="https://teen-lab.vercel.app" class="btn btn-gold" style="padding:1rem 2.1rem;font-size:.95rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Open in browser
+    </a>
   </div>
-  <div class="footer-meta">
-    © 2026 · Beta v1.0.12 · Windows desktop &amp; web<br>
-    <a href="https://github.com/ilanfuchs77-cyber/teen-lab">View on GitHub</a>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div>
+      <div class="foot-brand">Teen&nbsp;Lab</div>
+      <div class="foot-tag">The toolkit for teenagers who'd rather ship than scroll.</div>
+    </div>
+    <div class="foot-links">
+      <div class="foot-col">
+        <span class="h">Product</span>
+        <a href="https://teen-lab.vercel.app">Web app</a>
+        <a href="https://github.com/ilanfuchs77-cyber/teen-lab/releases/download/v1.0.12-beta/Teen.Lab.Setup.1.0.12-beta.exe">Download for Windows</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="foot-col">
+        <span class="h">More</span>
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="https://github.com/ilanfuchs77-cyber/teen-lab">GitHub</a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-base">
+    <span class="mono">© 2026 Teen Lab · Beta v1.0.12</span>
+    <span class="mono">Made for ambitious teenagers</span>
   </div>
 </footer>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canvas = document.getElementById('scene');
+const hdr = document.getElementById('hdr');
+const ticker = document.getElementById('ticker');
+
+/* ---------- renderer / scene / camera ---------- */
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+
+const scene = new THREE.Scene();
+const FOG_BASE = 0.0016;
+scene.fog = new THREE.FogExp2(0x36283f, FOG_BASE);   // warm mauve haze
+
+const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 4000);
+const camBase = new THREE.Vector3(0, 8, 34);
+camera.position.copy(camBase);
+const target = new THREE.Vector3(0, 13, -200);
+
+/* ---------- helpers ---------- */
+function canvasTex(w, h, draw){
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace; t.minFilter = THREE.LinearFilter; t.magFilter = THREE.LinearFilter;
+  return t;
+}
+
+/* ---------- sky (full-screen gradient background) ---------- */
+function makeSky(nightMix){
+  return canvasTex(8, 1024, (ctx, w, h) => {
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    // nightMix 0 = dusk, 1 = night
+    const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+    const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+    const lerpStop = (dusk, night) => rgb(mix(dusk, night, nightMix));
+    g.addColorStop(0.00, lerpStop([26,21,48],   [7,9,20]));      // zenith
+    g.addColorStop(0.42, lerpStop([47,34,62],   [16,16,38]));    // upper violet
+    g.addColorStop(0.60, lerpStop([84,58,82],   [28,24,54]));    // mid mauve
+    g.addColorStop(0.74, lerpStop([168,94,68],  [55,38,66]));    // muted coral
+    g.addColorStop(0.85, lerpStop([201,112,63], [82,52,70]));    // coral
+    g.addColorStop(0.93, lerpStop([242,193,78], [150,98,62]));   // gold band
+    g.addColorStop(1.00, lerpStop([255,206,99], [120,78,52]));   // horizon
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    // dither to kill banding
+    const img = ctx.getImageData(0, 0, w, h), d = img.data;
+    for (let i = 0; i < d.length; i += 4){ const n = (Math.random()*2-1)*4; d[i]+=n; d[i+1]+=n; d[i+2]+=n; }
+    ctx.putImageData(img, 0, 0);
+  });
+}
+scene.background = makeSky(0);
+
+/* ---------- sun (off-center, low, partly behind a crest) ---------- */
+const SUN = new THREE.Vector3(150, 46, -560);
+function glowTex(stops){
+  return canvasTex(128, 128, (ctx) => {
+    const g = ctx.createRadialGradient(64,64,0,64,64,64);
+    stops.forEach(s => g.addColorStop(s[0], s[1]));
+    ctx.fillStyle = g; ctx.fillRect(0,0,128,128);
+  });
+}
+const sunGroup = new THREE.Group();
+sunGroup.position.copy(SUN);
+function sunSprite(tex, scale, opacity){
+  const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, blending: THREE.AdditiveBlending, depthWrite:false, depthTest:false, transparent:true, opacity, fog:false }));
+  m.scale.set(scale, scale, 1); m.renderOrder = 5; return m;
+}
+const haloTex = glowTex([[0,'rgba(242,193,78,0.9)'],[0.25,'rgba(242,193,78,0.5)'],[0.6,'rgba(201,112,63,0.18)'],[1,'rgba(201,112,63,0)']]);
+const coreTex = glowTex([[0,'rgba(255,243,208,1)'],[0.3,'rgba(255,224,150,0.9)'],[0.7,'rgba(242,193,78,0.25)'],[1,'rgba(242,193,78,0)']]);
+const halo = sunSprite(haloTex, 560, 0.55);
+const mid  = sunSprite(haloTex, 240, 0.6);
+const core = sunSprite(coreTex, 90, 0.95);
+sunGroup.add(halo, mid, core);
+scene.add(sunGroup);
+
+/* faint god-ray fans */
+const rayTex = glowTex([[0,'rgba(242,193,78,0.5)'],[1,'rgba(242,193,78,0)']]);
+for (let i = 0; i < 3; i++){
+  const ray = new THREE.Mesh(
+    new THREE.PlaneGeometry(120, 900),
+    new THREE.MeshBasicMaterial({ map: rayTex, blending: THREE.AdditiveBlending, transparent:true, opacity:0.05, depthWrite:false, fog:false })
+  );
+  ray.position.copy(SUN); ray.position.y += 300;
+  ray.rotation.z = (i - 1) * 0.22;
+  ray.renderOrder = 4;
+  scene.add(ray);
+}
+
+/* ---------- ridges (paper-cut silhouettes) ---------- */
+const RIDGE_Z = [-40, -90, -150, -230, -330, -460, -620];
+const nearCol = new THREE.Color('#0b0e1a');
+const farCol  = new THREE.Color('#4a3a52');
+const ridges = [];
+const crests = [];
+
+// per-layer crest base height (world y) + amplitude — a staircase rising to the
+// horizon: nearest ridge sits low (fills the bottom), each farther ridge a touch
+// higher so its crest peeks above the one in front, the farthest just under the sun.
+const BASE_H = [-46, -26, -8, 8, 22, 34, 46];
+const AMP    = [ 64,  56,  48, 40, 32, 25, 18];
+RIDGE_Z.forEach((z, i) => {
+  const t = i / (RIDGE_Z.length - 1);
+  const width = Math.max(1500, Math.abs(z) * 7);
+  const segs = 200;
+  const geo = new THREE.PlaneGeometry(width, 1200, segs, 1);
+  const pos = geo.attributes.position;
+  const seed = i * 7.13 + 1.7;
+  const amp = AMP[i];       // near jagged, far gentle
+  const baseH = BASE_H[i];  // staircase toward the horizon
+  const crestPts = [];
+  for (let v = 0; v < pos.count; v++){
+    const x = pos.getX(v);
+    if (pos.getY(v) > 0){
+      const h = baseH + amp * (0.62*Math.sin(x*0.0042 + seed)
+                             + 0.30*Math.sin(x*0.0115 + seed*1.7)
+                             + 0.16*Math.sin(x*0.027  + seed*2.4));
+      pos.setY(v, h);
+      crestPts.push(new THREE.Vector3(x, h, 0));
+    } else {
+      pos.setY(v, -900);  // drop bottom far below frame -> solid cut-out
+    }
+  }
+  geo.attributes.position.needsUpdate = true;
+  const col = nearCol.clone().lerp(farCol, t);
+  const mat = new THREE.MeshBasicMaterial({ color: col, fog: true, transparent: true, opacity: 1 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(0, 0, z);
+  mesh.renderOrder = i;       // far first
+  scene.add(mesh);
+  ridges.push({ mesh, z, t, baseY: 0 });
+
+  // gold crest rim-light on the nearest 3 ridges
+  if (i <= 2){
+    crestPts.sort((a, b) => a.x - b.x);
+    const cg = new THREE.BufferGeometry().setFromPoints(crestPts);
+    const cm = new THREE.LineBasicMaterial({ color: 0xf2c14e, transparent:true, opacity: 0.0, blending: THREE.AdditiveBlending, depthWrite:false, fog:true });
+    const line = new THREE.Line(cg, cm);
+    line.position.set(0, 0.6, z);
+    line.renderOrder = i + 0.5;
+    scene.add(line);
+    crests.push({ line, baseOpacity: THREE.MathUtils.lerp(0.85, 0.28, i/2), i });
+  }
+});
+
+/* ---------- drifting cloud bands ---------- */
+const cloudTex = canvasTex(256, 64, (ctx, w, h) => {
+  const g = ctx.createLinearGradient(0,0,w,0);
+  g.addColorStop(0,'rgba(255,220,150,0)'); g.addColorStop(.5,'rgba(255,220,150,0.5)'); g.addColorStop(1,'rgba(255,220,150,0)');
+  ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+  const vg = ctx.createLinearGradient(0,0,0,h);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(.5,'rgba(255,255,255,0.0)'); vg.addColorStop(1,'rgba(0,0,0,0)');
+});
+const clouds = [];
+[[ -120, -300, 460, 0.10, 0.0065 ], [ 200, -440, 700, 0.08, 0.004 ], [ -40, -180, 320, 0.07, 0.009 ]].forEach(([x,z,w,op,sp]) => {
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(w, w*0.14),
+    new THREE.MeshBasicMaterial({ map: cloudTex, blending: THREE.AdditiveBlending, transparent:true, opacity: op, depthWrite:false, fog:true })
+  );
+  m.position.set(x, SUN.y - 6 + Math.random()*26, z);
+  m.renderOrder = 3;
+  scene.add(m);
+  clouds.push({ m, sp, x });
+});
+
+/* ---------- faint zenith stars ---------- */
+{
+  const N = 46, p = new Float32Array(N*3);
+  for (let i=0;i<N;i++){ p[i*3]=(Math.random()*2-1)*900; p[i*3+1]=160+Math.random()*260; p[i*3+2]=-300-Math.random()*500; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p,3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color:0xece4d6, size:1.5, sizeAttenuation:false, transparent:true, opacity:0.5, fog:false })));
+}
+
+/* ---------- interaction state ---------- */
+const mouse = { x: 0, y: 0 }, lerp = { x: 0, y: 0 };
+if (!reduce){
+  addEventListener('mousemove', e => { mouse.x = e.clientX/innerWidth*2-1; mouse.y = e.clientY/innerHeight*2-1; }, { passive:true });
+}
+let scrollProg = 0;
+function onScroll(){
+  const p = Math.min(1, scrollY / innerHeight);
+  scrollProg = p;
+  hdr.classList.toggle('solid', scrollY > 40);
+  // elevation ticker tied to overall scroll
+  const doc = document.documentElement;
+  const full = (doc.scrollHeight - innerHeight) || 1;
+  const alt = Math.round(scrollY / full * 3140);
+  ticker.textContent = 'ALT ' + alt.toLocaleString() + ' m';
+}
+addEventListener('scroll', onScroll, { passive:true });
+onScroll();
+
+/* ---------- intro timeline ---------- */
+let introStart = null, introDone = reduce;
+function startIntro(){
+  introStart = null; introDone = false;
+  document.querySelectorAll('.hero .rise').forEach((el, i) => {
+    el.classList.remove('in');
+    setTimeout(() => el.classList.add('in'), 1400 + i * 90);
+  });
+}
+function finalState(){
+  ridges.forEach(r => { r.mesh.material.opacity = 1; r.mesh.position.y = 0; });
+  sunGroup.scale.setScalar(1);
+  crests.forEach(c => c.line.material.opacity = c.baseOpacity);
+}
+if (reduce){
+  finalState();
+  document.querySelectorAll('.hero .rise').forEach(el => el.classList.add('in'));
+} else {
+  startIntro();
+}
+
+/* ---------- resize ---------- */
+function resize(){
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+
+/* ---------- pause when hero off-screen ---------- */
+let visible = true;
+const heroEl = document.querySelector('.hero');
+new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 }).observe(heroEl);
+
+/* ---------- render loop ---------- */
+const clock = new THREE.Clock();
+let elapsed = 0;
+function frame(){
+  requestAnimationFrame(frame);
+  if (!visible && introDone) { return; }
+  const dt = Math.min(clock.getDelta(), 0.05);  // clamp so a tab-pause / off-screen gap can't teleport drift
+  elapsed += dt;
+
+  // intro
+  if (!reduce && !introDone){
+    if (introStart === null) introStart = elapsed;
+    const tIn = elapsed - introStart;
+    const ease = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
+    // ridges back-to-front
+    let allDone = true;
+    ridges.forEach((r, i) => {
+      const delay = (RIDGE_Z.length - 1 - i) * 0.13;
+      const p = ease((tIn - delay) / 0.6);
+      r.mesh.material.opacity = p;
+      r.mesh.position.y = (1 - p) * 70;
+      if (p < 1) allDone = false;
+    });
+    const sp = ease((tIn - 0.9) / 0.8);
+    sunGroup.scale.setScalar(0.25 + sp * 0.75);
+    crests.forEach(c => c.line.material.opacity = c.baseOpacity * ease((tIn - 1.1) / 0.7));
+    if (tIn > 2.2 && allDone) { introDone = true; finalState(); }
+  }
+
+  // mouse parallax (lerped, capped)
+  lerp.x += (mouse.x - lerp.x) * 0.045;
+  lerp.y += (mouse.y - lerp.y) * 0.045;
+
+  // scroll: dolly into the valley + deepen toward night
+  camera.position.x = camBase.x + lerp.x * 9;
+  camera.position.y = camBase.y - lerp.y * 5 - scrollProg * 5;
+  camera.position.z = camBase.z - scrollProg * 16;
+  target.x = lerp.x * 6;
+  target.y = 13 - lerp.y * 4 - scrollProg * 8;
+  camera.lookAt(target);
+
+  scene.fog.density = FOG_BASE + scrollProg * 0.0011;
+
+  // ambient: sun breathe, cloud drift, crest shimmer
+  const breathe = 1 + Math.sin(elapsed * 1.05) * 0.04;
+  halo.scale.setScalar(560 * breathe); mid.scale.setScalar(240 * breathe);
+  clouds.forEach(c => {
+    c.m.position.x += c.sp * dt * 60;
+    if (c.m.position.x > 700) c.m.position.x = -700;
+  });
+  if (introDone){
+    crests.forEach((c, k) => {
+      c.line.material.opacity = c.baseOpacity * (0.82 + 0.18 * Math.sin(elapsed * 1.4 + k));
+    });
+  }
+
+  renderer.render(scene, camera);
+}
+
+if (reduce){
+  // one static, fully-assembled frame — no loop, no scroll/parallax motion
+  finalState();
+  camera.position.copy(camBase);
+  target.set(0, 13, -200);
+  camera.lookAt(target);
+  renderer.render(scene, camera);
+} else {
+  requestAnimationFrame(frame);
+}
+
+/* replay */
+document.getElementById('replay').addEventListener('click', () => {
+  if (reduce){ return; }
+  scrollTo({ top: 0, behavior: 'smooth' });
+  startIntro();
+});
+</script>
 
 </body>
 </html>
